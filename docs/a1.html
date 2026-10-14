@@ -1,18 +1,29 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
-
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
-
-    <link href="style.css" rel="stylesheet" type="text/css" />
-  </head>
   <body>
     <h1>Example Student's Assignment 1!</h1>
     <div class="header">
       <img src="red-panda.jpg" />
       <p>Here is all the documentation for assignment 1!</p>
     </div>
-  </body>
-</html>
+
+    <!-- MILESTONE 1: Visual Documentation Grid -->
+    <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 40px;">1. Circuit Schematic & Physical Breadboard</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; margin: 20px 0;">
+        
+        <!-- Left Column: Breadboard Diagram -->
+        <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <img src="circuit.png" alt="Fritzing breadboard layout" style="width: 100%; height: auto; border-radius: 4px; display: block;">
+            <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px;">
+                <strong>Circuit Layout Diagram:</strong> This physical breadboard layout shows an Arduino Uno controlling three independent light channels. The Red LED is driven by Digital Pin 8, the Yellow LED by Pin 10, and the Green LED by Pin 9. Jumper wires carry signals from these pins to the positive anode legs of the LEDs. A single black wire returns current from the common negative rail back into the Arduino GND pin.
+            </div>
+        </div>
+
+        <!-- Right Column: Engineering Schematic Diagram -->
+        <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <img src="schematic.png" alt="Circuit schematic diagram" style="width: 100%; height: auto; border-radius: 4px; display: block;">
+            <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px;">
+                <strong>Circuit Schematic:</strong> This formal circuit schematic shows three parallel LED paths connected directly to the Arduino's I/O pins. The resistors are placed in series directly before the LEDs to limit current flow and protect components from burning out. Based on Ohm's law (R = (V_source - V_f) / I), 220&Omega; resistors are utilized for the Red and Yellow lines to target a safe operating current of ~15mA from the 5V logic supply, while a 120&Omega; or 150&Omega; resistor is specified for the Green channel to offset its higher forward operating voltage.
+            </div>
+        </div>
+
+    </div>

@@ -1,63 +1,198 @@
-  <body>
-    <h1>Example Student's Assignment 1!</h1>
-    <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 1!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment 1: Blinking Holiday Lights</title>
+  <style>
+    :root {
+      --text: #1f2933;
+      --muted: #52606d;
+      --heading: #34495e;
+      --accent: #3182ce;
+      --border: #e1e4e6;
+      --surface: #ffffff;
+      --tint: #edf2f7;
+      --code-bg: #2d3748;
+      --code-text: #f7fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0 20px 60px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: #f7f8fa;
+    }
+    main { max-width: 960px; margin: 0 auto; }
+    a { color: var(--accent); }
+
+    /* Header */
+    header { padding: 40px 0 24px; }
+    header h1 { margin: 0 0 8px; font-size: 2rem; line-height: 1.2; color: var(--heading); }
+    header p { margin: 0 0 16px; color: var(--muted); max-width: 65ch; }
+    .hero {
+      display: block;
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    /* Sections */
+    section { margin-top: 48px; }
+    h2 {
+      margin: 0 0 16px;
+      padding-bottom: 6px;
+      font-size: 1.4rem;
+      color: var(--heading);
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { margin: 28px 0 10px; font-size: 1.1rem; color: var(--heading); }
+    p { margin: 0 0 14px; max-width: 75ch; }
+
+    /* Figures */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+    figure {
+      margin: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      background: #eee;
+    }
+    figcaption {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    figure.narrow { max-width: 520px; margin: 0 auto; }
+
+    /* Calculations */
+    .formula {
+      margin: 16px 0;
+      padding: 14px 16px;
+      background: var(--tint);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-x: auto;
+    }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 0.95rem; }
+    th, td { padding: 10px 12px; text-align: left; border: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--tint); color: var(--heading); }
+
+    /* Code */
+    pre {
+      margin: 16px 0 0;
+      padding: 20px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    /* Q&A */
+    .qa {
+      margin-bottom: 20px;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .qa h3 { margin-top: 0; }
+    .qa img { display: block; max-width: 100%; height: auto; margin: 0 0 12px; }
+    .qa p:last-child { margin-bottom: 0; }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.6rem; }
+      pre { padding: 14px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <header>
+    <h1>Assignment 1: Blinking Holiday Lights</h1>
+    <p>Three LEDs on an Arduino Uno, each blinking independently at its own rate. Below: the circuit, resistor calculations, firmware, and answers to the questions.</p>
+    <img class="hero" src="red-panda.jpg" alt="Header photo">
+    <p><a href="index.html">&larr; Back to home</a></p>
+  </header>
+
+  <section>
+    <h2>1. Schematic and breadboard</h2>
+    <div class="grid">
+      <figure>
+        <img src="circuit.png" alt="Fritzing breadboard layout of the three-LED circuit">
+        <figcaption>
+          <strong>Breadboard layout.</strong> An Arduino Uno drives three independent LEDs. Red is on Digital Pin 8, green on Pin 9, and yellow on Pin 10. Each pin feeds the LED's anode (long leg) through a resistor. A black wire returns current from the shared ground rail to the Arduino GND pin.
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img src="schematic.png" alt="Circuit schematic with three LED branches">
+        <figcaption>
+          <strong>Schematic.</strong> Three parallel branches connect directly to the Arduino's I/O pins. Each resistor is in series with its LED to limit current and keep the LED from burning out. Using Ohm's law, 220&Omega; resistors are used for red and yellow, and a 120&Omega; or 150&Omega; resistor is used for green, which has a higher forward voltage. All targets are about 15 mA from the 5 V pin.
+        </figcaption>
+      </figure>
     </div>
+  </section>
 
-    <!-- Visual Documentation Grid (Wrapped in a secure section) -->
-    <section style="display: block; clear: both; width: 100%; margin-top: 40px; padding-bottom: 20px;">
-        <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">1. Circuit Schematic & Physical Breadboard</h2>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; margin: 20px 0;">
-            
-            <!-- Left Column: Breadboard Diagram -->
-            <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); min-height: 150px;">
-                <img src="circuit.png" alt="Fritzing breadboard layout" style="width: 100%; height: auto; min-height: 100px; background: #eee; border-radius: 4px; display: block;">
-                <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px;">
-                    <strong>Circuit Layout Diagram:</strong> This physical breadboard layout shows an Arduino Uno controlling three independent light channels. The Red LED is driven by Digital Pin 8, the Yellow LED by Pin 10, and the Green LED by Pin 9. Jumper wires carry signals from these pins to the positive anode legs of the LEDs. A single black wire returns current from the common negative rail back into the Arduino GND pin.
-                </div>
-            </div>
+  <section>
+    <h2>2. Current-limiting resistor calculations</h2>
+    <p>To keep each pin's current at about 15 mA (0.015 A) from a 5 V output, each resistor is sized with Ohm's law:</p>
+    <div class="formula">R = (V_source &minus; V_forward) / I_target</div>
 
-            <!-- Right Column: Engineering Schematic Diagram -->
-            <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); min-height: 150px;">
-                <img src="schematic.png" alt="Circuit schematic diagram" style="width: 100%; height: auto; min-height: 100px; background: #eee; border-radius: 4px; display: block;">
-                <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px;">
-                    <strong>Circuit Schematic:</strong> This formal circuit schematic shows three parallel LED paths connected directly to the Arduino's I/O pins. The resistors are placed in series directly before the LEDs to limit current flow and protect components from burning out. Based on Ohm's law (R = (V_source - V_f) / I), 220&Omega; resistors are utilized for the Red and Yellow lines to target a safe operating current of ~15mA from the 5V logic supply, while a 120&Omega; or 150&Omega; resistor is specified for the Green channel to offset its higher forward operating voltage.
-                </div>
-            </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>LED</th><th>Forward voltage</th><th>Calculation</th><th>Resistor used</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Red</td><td>&asymp; 2.0 V</td><td>(5 &minus; 2.0) / 0.015 = 200&Omega;</td><td>220&Omega;</td></tr>
+          <tr><td>Yellow</td><td>&asymp; 2.1 V</td><td>(5 &minus; 2.1) / 0.015 = 193.3&Omega;</td><td>220&Omega;</td></tr>
+          <tr><td>Green</td><td>&asymp; 3.2 V</td><td>(5 &minus; 3.2) / 0.015 = 120&Omega;</td><td>120&Omega; or 150&Omega;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px;">Each value is rounded up to the next standard resistor, so the real current is slightly under 15 mA.</p>
+  </section>
 
-        </div>
-    </section>
+  <section>
+    <h2>3. Circuit in action</h2>
+    <figure class="narrow">
+      <img src="blink.gif" alt="Animated GIF of the three LEDs blinking">
+      <figcaption>
+        <strong>Demo.</strong> The red (Pin 8), green (Pin 9), and yellow (Pin 10) LEDs blink independently, each on its own timer.
+      </figcaption>
+    </figure>
+  </section>
 
-    <!-- Calculations & Operational GIF (Wrapped in a separate secure section) -->
-    <section style="display: block; clear: both; width: 100%; margin-top: 40px; padding-bottom: 20px;">
-        <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">2. Current-Limiting Resistor Calculations</h2>
-        <p>To safely limit current draw from the Arduino pins to ~15mA (0.015A) per LED line from a 5V source, the values are derived via Ohm's Law:</p>
-        
-        <div style="background-color: #edf2f7; padding: 15px; border-left: 4px solid #3182ce; font-family: monospace; margin: 15px 0; border-radius: 0 4px 4px 0;">
-            Formula: R = (V_source - V_forward) / I_target
-        </div>
+  <section>
+    <h2>4. Firmware</h2>
+    <p>The code checks elapsed time with <code>millis()</code> instead of <code>delay()</code>, so no LED has to wait for another and each blinks at its own rate.</p>
 
-        <ul style="line-height: 1.8;">
-            <li><strong>Red LED:</strong> V_f &approx; 2.0V | R = (5V - 2.0V) / 0.015A = 200&Omega; &rarr; <em>Used a standard 220&Omega; resistor.</em></li>
-            <li><strong>Yellow LED:</strong> V_f &approx; 2.1V | R = (5V - 2.1V) / 0.015A = 193.3&Omega; &rarr; <em>Used a standard 220&Omega; resistor.</em></li>
-            <li><strong>Green LED:</strong> V_f &approx; 3.2V | R = (5V - 3.2V) / 0.015A = 120&Omega; &rarr; <em>Used a standard 120&Omega; or 150&Omega; resistor.</em></li>
-        </ul>
-
-        <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 40px;">3. Operational Demonstration</h2>
-        <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); max-width: 500px; margin: 20px auto;">
-            <img src="blink.gif" alt="Animated GIF showing circuit blinking" style="width: 100%; height: auto; min-height: 100px; background: #eee; border-radius: 4px; display: block;">
-            <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px; text-align: center;">
-                <strong>Circuit Animation:</strong> Real-time operations showcasing truly asynchronous, non-blocking rhythm sets mapping to Red (Pin 8), Green (Pin 9), and Yellow (Pin 10).
-            </div>
-        </div>
-    </section>
-    <!-- MILESTONE 3: Code Snippet & Theory Q&As -->
-    <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 40px;">4. Production Firmware Architecture</h2>
-    <p>This implementation handles timing checks natively through internal elapsed clock states instead of blocking delay lines.</p>
-
-    <pre style="background-color: #2d3748; color: #f7fafc; padding: 20px; border-radius: 6px; overflow-x: auto; font-family: monospace; font-size: 0.85rem;"><code>// Define the digital output pin connected to the Red LED
+<pre><code>// Define the digital output pin connected to the Red LED
 const int redLedPin = 8;
 // Define the digital output pin connected to the Green LED
 const int greenLedPin = 9;
@@ -101,7 +236,7 @@ void loop() {
   unsigned long currentMillis = millis();
 
   // Check if the elapsed time exceeds the defined interval threshold for the Red LED
-  if (currentMillis - previousRedMillis >= redInterval) {
+  if (currentMillis - previousRedMillis &gt;= redInterval) {
     // Overwrite the previous Red timestamp with the current running system time
     previousRedMillis = currentMillis;
 
@@ -119,7 +254,7 @@ void loop() {
   }
 
   // Check if the elapsed time exceeds the defined interval threshold for the Green LED
-  if (currentMillis - previousGreenMillis >= greenInterval) {
+  if (currentMillis - previousGreenMillis &gt;= greenInterval) {
     // Overwrite the previous Green timestamp with the current running system time
     previousGreenMillis = currentMillis;
 
@@ -137,7 +272,7 @@ void loop() {
   }
 
   // Check if the elapsed time exceeds the defined interval threshold for the Yellow LED
-  if (currentMillis - previousYellowMillis >= yellowInterval) {
+  if (currentMillis - previousYellowMillis &gt;= yellowInterval) {
     // Overwrite the previous Yellow timestamp with the current running system time
     previousYellowMillis = currentMillis;
 
@@ -154,26 +289,35 @@ void loop() {
     digitalWrite(yellowLedPin, yellowState);
   }
 }</code></pre>
+  </section>
 
-    <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 40px;">5. Conceptual Theory Q&A</h2>
-    
-    <p><strong>Q1: Voltage Graph Profile</strong></p>
-    <div style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e1e4e6; margin-bottom: 20px;">
-        <img src="voltage-graph.png" alt="Voltage vs Time Graph" style="max-width: 100%; height: auto;"><br>
-        The graph maps independent digital square waves plotting Voltage vs Time. The Red LED cycles every 330ms toggling between 0V and 2.0V. The Green LED captures transitions every 650ms between 0V and 3.2V, while the Yellow LED alternates state every 1000ms between 0V and 2.1V.
+  <section>
+    <h2>5. Questions</h2>
+
+    <div class="qa">
+      <h3>Q1: Voltage across each LED over time</h3>
+      <img src="voltage-graph.png" alt="Graph of voltage across each LED versus time">
+      <p>Each LED is a square wave between 0 V (off) and its forward voltage (on). Red toggles every 330 ms between 0 V and 2.0 V. Green toggles every 650 ms between 0 V and 3.2 V. Yellow toggles every 1000 ms between 0 V and 2.1 V.</p>
     </div>
 
-    <p><strong>Q2: Independent Pins & Max Current Limits</strong></p>
-    <div style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e1e4e6; margin-bottom: 20px;">
-        An Arduino Uno has 20 usable independent digital I/O channels (Pins 0-13, and Pins A0-A5 running as digital pins). However, the ATmega328P microcontroller chip enforces a strict total max limit of 200mA across all paths. If you run 20 LEDs at 15mA each, the total calculated draw reaches 300mA—which safely crashes past the 200mA threshold. To safely map all 20 independent pins without damaging the processor, the resistor values must be scaled up to lower individual draws to around 9mA max per lane (200mA / 20 pins = 10mA max safety ceiling).
+    <div class="qa">
+      <h3>Q2: How many LEDs, and how much current?</h3>
+      <p>An Arduino Uno has 20 usable digital I/O pins (pins 0&ndash;13 plus A0&ndash;A5 used as digital pins). The ATmega328P is limited to about 200 mA total across all pins. Running 20 LEDs at 15 mA each would draw 300 mA, which is over that limit.</p>
+      <p>To use all 20 pins safely, the resistors would need to be larger so each LED draws about 10 mA or less (200 mA / 20 pins = 10 mA).</p>
     </div>
 
-    <p><strong>Q3: Flicker Fusion Threshold</strong></p>
-    <div style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e1e4e6; margin-bottom: 20px;">
-        Merging rapid visual flashes into a seemingly steady stream requires hitting the eye's Flicker Fusion Threshold. For humans, this occurs between a frequency of 50 Hz and 60 Hz. At 50Hz, a complete cycle timeline lasts exactly 20 milliseconds. Therefore, setting an internal firmware timing loop interval to 10 milliseconds or lower (10ms HIGH, 10ms LOW) locks the physical output into an unmoving, steady beam to the observer.
+    <div class="qa">
+      <h3>Q3: Flicker fusion threshold</h3>
+      <p>For most people, a blinking light looks steady at roughly 50&ndash;60 Hz. A 50 Hz blink has a 20 ms cycle, so an interval of 10 ms or less (10 ms on, 10 ms off) looks like a steady light.</p>
+      <!-- MEASUREMENT HERE -->
     </div>
 
-    <p><strong>Q4: AI Tools Reflection</strong></p>
-    <div style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e1e4e6; margin-bottom: 20px;">
-        Yes, an AI tool was leveraged to structure standard boilerplate layouts for non-blocking millis() timing architecture and cleanly check safety thresholds via parallel calculation structures for the varying forward-voltages of distinct colored LEDs. It also accelerated building this clean layout structure so documentation satisfies assignment layout goals.
+    <div class="qa">
+      <h3>Q4: AI tool reflection</h3>
+      <p>Yes. I used an AI tool to help structure the non-blocking <code>millis()</code> timing code and to check the resistor calculations for the different forward voltages of each LED color. It also helped me lay out this documentation page.</p>
     </div>
+  </section>
+
+</main>
+</body>
+</html>

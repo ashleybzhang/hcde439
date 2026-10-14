@@ -29,8 +29,8 @@
     a { color: var(--accent); }
 
     /* Header */
-    header { padding: 40px 0 40px; }
-    header h1 { margin: 0 0 8px; font-size: 2rem; line-height: 1.2; color: var(--heading); }
+    header { padding: 40px 0 24px; }
+    header h1 { margin: 0 0 24px; font-size: 2rem; line-height: 1.2; color: var(--heading); }
     header p { margin: 0 0 16px; color: var(--muted); max-width: 65ch; }
     .hero {
       display: block;
@@ -149,7 +149,7 @@
       </figure>
 
       <figure>
-        <img src="schematic.png" alt="Circuit schematic with three LED branches">
+        <img src="schematic.jpg" alt="Circuit schematic with three LED branches">
         <figcaption>
           <strong>Schematic.</strong> Three parallel branches connect directly to the Arduino's I/O pins. Each resistor is in series with its LED to limit current and keep the LED from burning out. Using Ohm's law, 220&Omega; resistors are used for red and yellow, and a 120&Omega; or 150&Omega; resistor is used for green, which has a higher forward voltage. All targets are about 15 mA from the 5 V pin.
         </figcaption>

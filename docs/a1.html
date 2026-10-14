@@ -29,19 +29,21 @@
     a { color: var(--accent); }
 
     /* Header */
-    header { padding: 40px 0 24px; }
-    header h1 { margin: 0 0 24px; font-size: 2rem; line-height: 1.2; color: var(--heading); }
-    header p { margin: 0 0 16px; color: var(--muted); max-width: 65ch; }
+    header { padding: 24px 0 0; }
+    header h1 { margin: 0 0 10px; font-size: 2rem; line-height: 1.2; color: var(--heading); }
+    header p { margin: 0; color: var(--muted); max-width: 65ch; }
     .hero {
       display: block;
       width: 100%;
       max-height: 280px;
       object-fit: cover;
       border-radius: 8px;
+      margin-bottom: 56px;
     }
 
     /* Sections */
     section { margin-top: 48px; }
+    header + section { margin-top: 24px; }
     h2 {
       margin: 0 0 16px;
       padding-bottom: 6px;

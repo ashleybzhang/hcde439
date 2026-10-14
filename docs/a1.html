@@ -5,47 +5,175 @@
       <p>Here is all the documentation for assignment 1!</p>
     </div>
 
-    <!-- Header -->
-    <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 40px;">1. Circuit Schematic & Physical Breadboard</h2>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; margin: 20px 0;">
+    <!-- Visual Documentation Grid (Wrapped in a secure section) -->
+    <section style="display: block; clear: both; width: 100%; margin-top: 40px; padding-bottom: 20px;">
+        <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">1. Circuit Schematic & Physical Breadboard</h2>
         
-        <!-- Left Column: Breadboard Diagram -->
-        <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-            <img src="circuit.png" alt="Fritzing breadboard layout" style="width: 100%; height: auto; border-radius: 4px; display: block;">
-            <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px;">
-                <strong>Circuit Layout Diagram:</strong> This physical breadboard layout shows an Arduino Uno controlling three independent light channels. The Red LED is driven by Digital Pin 8, the Yellow LED by Pin 10, and the Green LED by Pin 9. Jumper wires carry signals from these pins to the positive anode legs of the LEDs. A single black wire returns current from the common negative rail back into the Arduino GND pin.
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; margin: 20px 0;">
+            
+            <!-- Left Column: Breadboard Diagram -->
+            <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); min-height: 150px;">
+                <img src="circuit.png" alt="Fritzing breadboard layout" style="width: 100%; height: auto; min-height: 100px; background: #eee; border-radius: 4px; display: block;">
+                <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px;">
+                    <strong>Circuit Layout Diagram:</strong> This physical breadboard layout shows an Arduino Uno controlling three independent light channels. The Red LED is driven by Digital Pin 8, the Yellow LED by Pin 10, and the Green LED by Pin 9. Jumper wires carry signals from these pins to the positive anode legs of the LEDs. A single black wire returns current from the common negative rail back into the Arduino GND pin.
+                </div>
+            </div>
+
+            <!-- Right Column: Engineering Schematic Diagram -->
+            <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); min-height: 150px;">
+                <img src="schematic.png" alt="Circuit schematic diagram" style="width: 100%; height: auto; min-height: 100px; background: #eee; border-radius: 4px; display: block;">
+                <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px;">
+                    <strong>Circuit Schematic:</strong> This formal circuit schematic shows three parallel LED paths connected directly to the Arduino's I/O pins. The resistors are placed in series directly before the LEDs to limit current flow and protect components from burning out. Based on Ohm's law (R = (V_source - V_f) / I), 220&Omega; resistors are utilized for the Red and Yellow lines to target a safe operating current of ~15mA from the 5V logic supply, while a 120&Omega; or 150&Omega; resistor is specified for the Green channel to offset its higher forward operating voltage.
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Calculations & Operational GIF (Wrapped in a separate secure section) -->
+    <section style="display: block; clear: both; width: 100%; margin-top: 40px; padding-bottom: 20px;">
+        <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">2. Current-Limiting Resistor Calculations</h2>
+        <p>To safely limit current draw from the Arduino pins to ~15mA (0.015A) per LED line from a 5V source, the values are derived via Ohm's Law:</p>
+        
+        <div style="background-color: #edf2f7; padding: 15px; border-left: 4px solid #3182ce; font-family: monospace; margin: 15px 0; border-radius: 0 4px 4px 0;">
+            Formula: R = (V_source - V_forward) / I_target
+        </div>
+
+        <ul style="line-height: 1.8;">
+            <li><strong>Red LED:</strong> V_f &approx; 2.0V | R = (5V - 2.0V) / 0.015A = 200&Omega; &rarr; <em>Used a standard 220&Omega; resistor.</em></li>
+            <li><strong>Yellow LED:</strong> V_f &approx; 2.1V | R = (5V - 2.1V) / 0.015A = 193.3&Omega; &rarr; <em>Used a standard 220&Omega; resistor.</em></li>
+            <li><strong>Green LED:</strong> V_f &approx; 3.2V | R = (5V - 3.2V) / 0.015A = 120&Omega; &rarr; <em>Used a standard 120&Omega; or 150&Omega; resistor.</em></li>
+        </ul>
+
+        <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 40px;">3. Operational Demonstration</h2>
+        <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); max-width: 500px; margin: 20px auto;">
+            <img src="blink.gif" alt="Animated GIF showing circuit blinking" style="width: 100%; height: auto; min-height: 100px; background: #eee; border-radius: 4px; display: block;">
+            <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px; text-align: center;">
+                <strong>Circuit Animation:</strong> Real-time operations showcasing truly asynchronous, non-blocking rhythm sets mapping to Red (Pin 8), Green (Pin 9), and Yellow (Pin 10).
             </div>
         </div>
+    </section>
+    <!-- MILESTONE 3: Code Snippet & Theory Q&As -->
+    <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 40px;">4. Production Firmware Architecture</h2>
+    <p>This implementation handles timing checks natively through internal elapsed clock states instead of blocking delay lines.</p>
 
-        <!-- Right Column: Engineering Schematic Diagram -->
-        <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-            <img src="schematic.png" alt="Circuit schematic diagram" style="width: 100%; height: auto; border-radius: 4px; display: block;">
-            <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px;">
-                <strong>Circuit Schematic:</strong> This formal circuit schematic shows three parallel LED paths connected directly to the Arduino's I/O pins. The resistors are placed in series directly before the LEDs to limit current flow and protect components from burning out. Based on Ohm's law (R = (V_source - V_f) / I), 220&Omega; resistors are utilized for the Red and Yellow lines to target a safe operating current of ~15mA from the 5V logic supply, while a 120&Omega; or 150&Omega; resistor is specified for the Green channel to offset its higher forward operating voltage.
-            </div>
-        </div>
+    <pre style="background-color: #2d3748; color: #f7fafc; padding: 20px; border-radius: 6px; overflow-x: auto; font-family: monospace; font-size: 0.85rem;"><code>// Define the digital output pin connected to the Red LED
+const int redLedPin = 8;
+// Define the digital output pin connected to the Green LED
+const int greenLedPin = 9;
+// Define the digital output pin connected to the Yellow LED
+const int yellowLedPin = 10;
 
-    </div>
+// Track the current on/off state of the Red LED
+int redState = LOW;
+// Track the current on/off state of the Green LED
+int greenState = LOW;
+// Track the current on/off state of the Yellow LED
+int yellowState = LOW;
+
+// Store the exact timestamp when the Red LED last updated its state
+unsigned long previousRedMillis = 0;
+// Store the exact timestamp when the Green LED last updated its state
+unsigned long previousGreenMillis = 0;
+// Store the exact timestamp when the Yellow LED last updated its state
+unsigned long previousYellowMillis = 0;
+
+// Set the independent blink interval rate for the Red LED in milliseconds
+const long redInterval = 330;
+// Set the independent blink interval rate for the Green LED in milliseconds
+const long greenInterval = 650;
+// Set the independent blink interval rate for the Yellow LED in milliseconds
+const long yellowInterval = 1000;
+
+// Run the initial hardware initialization routine upon device startup
+void setup() {
+  // Configure the designated Red LED pin as an electrical output signal
+  pinMode(redLedPin, OUTPUT);
+  // Configure the designated Green LED pin as an electrical output signal
+  pinMode(greenLedPin, OUTPUT);
+  // Configure the designated Yellow LED pin as an electrical output signal
+  pinMode(yellowLedPin, OUTPUT);
+}
+
+// Execute the main program cycle repeatedly while the Arduino remains powered
+void loop() {
+  // Retrieve and capture the number of milliseconds passed since the board started running
+  unsigned long currentMillis = millis();
+
+  // Check if the elapsed time exceeds the defined interval threshold for the Red LED
+  if (currentMillis - previousRedMillis >= redInterval) {
+    // Overwrite the previous Red timestamp with the current running system time
+    previousRedMillis = currentMillis;
+
+    // Toggle the Red state variable between HIGH and LOW values
+    if (redState == LOW) {
+      // Switch the state tracking value to HIGH if it was previously LOW
+      redState = HIGH;
+    } else {
+      // Switch the state tracking value to LOW if it was previously HIGH
+      redState = LOW;
+    }
+
+    // Apply the updated state value directly to the Red LED hardware pin
+    digitalWrite(redLedPin, redState);
+  }
+
+  // Check if the elapsed time exceeds the defined interval threshold for the Green LED
+  if (currentMillis - previousGreenMillis >= greenInterval) {
+    // Overwrite the previous Green timestamp with the current running system time
+    previousGreenMillis = currentMillis;
+
+    // Toggle the Green state variable between HIGH and LOW values
+    if (greenState == LOW) {
+      // Switch the state tracking value to HIGH if it was previously LOW
+      greenState = HIGH;
+    } else {
+      // Switch the state tracking value to LOW if it was previously HIGH
+      greenState = LOW;
+    }
+
+    // Apply the updated state value directly to the Green LED hardware pin
+    digitalWrite(greenLedPin, greenState);
+  }
+
+  // Check if the elapsed time exceeds the defined interval threshold for the Yellow LED
+  if (currentMillis - previousYellowMillis >= yellowInterval) {
+    // Overwrite the previous Yellow timestamp with the current running system time
+    previousYellowMillis = currentMillis;
+
+    // Toggle the Yellow state variable between HIGH and LOW values
+    if (yellowState == LOW) {
+      // Switch the state tracking value to HIGH if it was previously LOW
+      yellowState = HIGH;
+    } else {
+      // Switch the state tracking value to LOW if it was previously HIGH
+      yellowState = LOW;
+    }
+
+    // Apply the updated state value directly to the Yellow LED hardware pin
+    digitalWrite(yellowLedPin, yellowState);
+  }
+}</code></pre>
+
+    <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 40px;">5. Conceptual Theory Q&A</h2>
     
-    <!-- Calculations & Operational GIF -->
-    <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 40px;">2. Current-Limiting Resistor Calculations</h2>
-    <p>To safely limit current draw from the Arduino pins to ~15mA (0.015A) per LED line from a 5V source, the values are derived via Ohm's Law:</p>
-    
-    <div style="background-color: #edf2f7; padding: 15px; border-left: 4px solid #3182ce; font-family: monospace; margin: 15px 0; border-radius: 0 4px 4px 0;">
-        Formula: R = (V_source - V_forward) / I_target
+    <p><strong>Q1: Voltage Graph Profile</strong></p>
+    <div style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e1e4e6; margin-bottom: 20px;">
+        <img src="voltage-graph.png" alt="Voltage vs Time Graph" style="max-width: 100%; height: auto;"><br>
+        The graph maps independent digital square waves plotting Voltage vs Time. The Red LED cycles every 330ms toggling between 0V and 2.0V. The Green LED captures transitions every 650ms between 0V and 3.2V, while the Yellow LED alternates state every 1000ms between 0V and 2.1V.
     </div>
 
-    <ul style="line-height: 1.8;">
-        <li><strong>Red LED:</strong> V_f &approx; 2.0V | R = (5V - 2.0V) / 0.015A = 200&Omega; &rarr; <em>Used a standard 220&Omega; resistor.</em></li>
-        <li><strong>Yellow LED:</strong> V_f &approx; 2.1V | R = (5V - 2.1V) / 0.015A = 193.3&Omega; &rarr; <em>Used a standard 220&Omega; resistor.</em></li>
-        <li><strong>Green LED:</strong> V_f &approx; 3.2V | R = (5V - 3.2V) / 0.015A = 120&Omega; &rarr; <em>Used a standard 120&Omega; or 150&Omega; resistor.</em></li>
-    </ul>
+    <p><strong>Q2: Independent Pins & Max Current Limits</strong></p>
+    <div style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e1e4e6; margin-bottom: 20px;">
+        An Arduino Uno has 20 usable independent digital I/O channels (Pins 0-13, and Pins A0-A5 running as digital pins). However, the ATmega328P microcontroller chip enforces a strict total max limit of 200mA across all paths. If you run 20 LEDs at 15mA each, the total calculated draw reaches 300mA—which safely crashes past the 200mA threshold. To safely map all 20 independent pins without damaging the processor, the resistor values must be scaled up to lower individual draws to around 9mA max per lane (200mA / 20 pins = 10mA max safety ceiling).
+    </div>
 
-    <h2 style="color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 40px;">3. Operational Demonstration</h2>
-    <div style="background: white; border: 1px solid #e1e4e6; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); max-width: 500px; margin: 20px auto;">
-        <img src="blink.gif" alt="Animated GIF showing circuit blinking" style="width: 100%; height: auto; border-radius: 4px; display: block;">
-        <div style="font-size: 0.9rem; color: #555; margin-top: 12px; line-height: 1.4; border-top: 1px solid #eee; padding-top: 10px; text-align: center;">
-            <strong>Circuit Animation:</strong> Real-time operations showcasing truly asynchronous, non-blocking rhythm sets mapping to Red (Pin 8), Green (Pin 9), and Yellow (Pin 10).
-        </div>
+    <p><strong>Q3: Flicker Fusion Threshold</strong></p>
+    <div style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e1e4e6; margin-bottom: 20px;">
+        Merging rapid visual flashes into a seemingly steady stream requires hitting the eye's Flicker Fusion Threshold. For humans, this occurs between a frequency of 50 Hz and 60 Hz. At 50Hz, a complete cycle timeline lasts exactly 20 milliseconds. Therefore, setting an internal firmware timing loop interval to 10 milliseconds or lower (10ms HIGH, 10ms LOW) locks the physical output into an unmoving, steady beam to the observer.
+    </div>
+
+    <p><strong>Q4: AI Tools Reflection</strong></p>
+    <div style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e1e4e6; margin-bottom: 20px;">
+        Yes, an AI tool was leveraged to structure standard boilerplate layouts for non-blocking millis() timing architecture and cleanly check safety thresholds via parallel calculation structures for the varying forward-voltages of distinct colored LEDs. It also accelerated building this clean layout structure so documentation satisfies assignment layout goals.
     </div>

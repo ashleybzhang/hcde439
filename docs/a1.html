@@ -42,7 +42,7 @@
     }
 
     /* Sections */
-    section { margin-top: 48px; }
+    section { margin-top: 24px; }
     header + section { margin-top: 24px; }
     h2 {
       margin: 0 0 16px;
@@ -137,7 +137,7 @@
   <header>
     <img class="hero" src="banner.jpg" alt="Banner image for Assignment 1">
     <h1>Assignment 1: Blinking Holiday Lights</h1>
-    <p>Three LEDs on an Arduino Uno, each blinking independently at its own rate. Below: the circuit, resistor calculations, firmware, and answers to the questions.</p>
+    <p>Three LEDs on an Arduino Uno, each blinking independently at its own rate.</p>
   </header>
 
   <section>
@@ -153,7 +153,7 @@
       <figure>
         <img src="schematic.jpg" alt="Circuit schematic with three LED branches">
         <figcaption>
-          <strong>Schematic.</strong> Three parallel branches connect directly to the Arduino's I/O pins. Each resistor is in series with its LED to limit current and keep the LED from burning out. Using Ohm's law, 220&Omega; resistors are used for red and yellow, and a 120&Omega; or 150&Omega; resistor is used for green, which has a higher forward voltage. All targets are about 15 mA from the 5 V pin.
+          <strong>Schematic.</strong> Three parallel branches connect directly to the Arduino's I/O pins. Each resistor is in series with its LED to limit current and keep the LED from burning out. Using Ohm's law, 220&Omega; resistors are used for red and yellow and green(despite having a higher forward voltage). All targets are about 15 mA from the 5 V pin.
         </figcaption>
       </figure>
     </div>
@@ -172,7 +172,7 @@
         <tbody>
           <tr><td>Red</td><td>&asymp; 2.0 V</td><td>(5 &minus; 2.0) / 0.015 = 200&Omega;</td><td>220&Omega;</td></tr>
           <tr><td>Yellow</td><td>&asymp; 2.1 V</td><td>(5 &minus; 2.1) / 0.015 = 193.3&Omega;</td><td>220&Omega;</td></tr>
-          <tr><td>Green</td><td>&asymp; 3.2 V</td><td>(5 &minus; 3.2) / 0.015 = 120&Omega;</td><td>120&Omega; or 150&Omega;</td></tr>
+          <tr><td>Green</td><td>&asymp; 3.2 V</td><td>(5 &minus; 3.2) / 0.015 = 120&Omega;</td><td>220&Omega;</td></tr>
         </tbody>
       </table>
     </div>
@@ -303,8 +303,8 @@ void loop() {
 
     <div class="qa">
       <h3>Q2: How many LEDs, and how much current?</h3>
-      <p>An Arduino Uno has 20 usable digital I/O pins (pins 0&ndash;13 plus A0&ndash;A5 used as digital pins). The ATmega328P is limited to about 200 mA total across all pins. Running 20 LEDs at 15 mA each would draw 300 mA, which is over that limit.</p>
-      <p>To use all 20 pins safely, the resistors would need to be larger so each LED draws about 10 mA or less (200 mA / 20 pins = 10 mA).</p>
+      <p>An Arduino Uno has 20 digital pins (0 to 13, plus A0 to A5), so it could blink up to 20 LEDs independently. The chip can only supply about 200 mA in total. At 15 mA each, 20 LEDs would draw 300 mA, which is too much. To run all 20 safely, each LED</p>
+      <p>would need to draw 10 mA or less, which means using larger resistors.</p>
     </div>
 
     <div class="qa">
@@ -315,7 +315,7 @@ void loop() {
 
     <div class="qa">
       <h3>Q4: AI tool reflection</h3>
-      <p>Yes. I used an AI tool to help structure the non-blocking <code>millis()</code> timing code and to check the resistor calculations for the different forward voltages of each LED color. It also helped me lay out this documentation page.</p>
+      <p>I used an AI tool to help structure the non-blocking <code>millis()</code> timing code and to check the resistor calculations for the different forward voltages of each LED color. It also helped me lay out this documentation page.</p>
     </div>
   </section>
 

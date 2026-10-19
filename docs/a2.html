@@ -27,7 +27,7 @@ th,td{border-bottom:1px solid var(--line);padding:6px 10px;text-align:left;white
 <body>
 <main>
 <p><a href="index.html">&larr; Back to home</a></p>
-<img src="a2-banner.jpg" alt="Banner image for Assignment 2">
+<img src="firefly banner.jpg" alt="Banner image for Assignment 2">
 
 <h1>Assignment 2: Breathing Firefly Light-Up Toy</h1>
 <p>A night-light prototype for a plush toy. One LED fades in and out continuously, and holding a button lights two more LEDs.</p>
@@ -39,7 +39,7 @@ th,td{border-bottom:1px solid var(--line);padding:6px 10px;text-align:left;white
 
 <img src="a2-circuit.jpg" alt="Photo of the breadboard circuit">
 <p><em><strong>Breadboard.</strong> LED 1 (red) is on Pin 9, LED 2 (red) on Pin 7 and LED 3 (red) on Pin 8. Each pin feeds the LED's anode (long leg) through a 330&#937; resistor, and the cathodes return to the shared ground rail. The button runs from the 5 V pin to Pin 2, with the 10 k&#937; resistor from Pin 2 to the ground rail.</em></p>
-<p class="todo">TODO: add your own breadboard photo as a2-circuit.jpg and a banner as a2-banner.jpg, and update the caption if your colors or pins differ. Delete these TODO boxes before submitting.</p>
+<p class="todo">Add breadboard photo as a2-circuit.jpg and a banner as a2-banner.jpg, and update the caption if colors or pins differ.</p>
 
 <h2>2. Current-limiting resistor calculations</h2>
 <p>Each LED is sized for a target of 10 mA (0.010 A) from a 5 V pin, comfortably under the Uno's recommended 20 mA per pin:</p>
@@ -54,7 +54,7 @@ th,td{border-bottom:1px solid var(--line);padding:6px 10px;text-align:left;white
 <h2>3. Circuit in action</h2>
 <img src="a2-demo.gif" alt="Animated GIF of LED 1 fading while the button lights LED 2 and LED 3">
 <p><em><strong>Demo.</strong> LED 1 (Pin 9) breathes continuously. While the button is held, LED 2 (Pin 7) and LED 3 (Pin 8) turn on; releasing it turns them off.</em></p>
-<p class="todo">TODO: record your own gif or video (or embed a YouTube/Vimeo link) and save it as a2-demo.gif.</p>
+<p class="todo">GIF and save it as a2-demo.gif.</p>
 
 <h2>4. Firmware</h2>
 <p>A <code>for</code> loop steps LED 1's brightness with <code>analogWrite()</code>. The button is read with <code>digitalRead()</code> on every step, so it responds immediately, and LEDs 2 and 3 follow it with <code>digitalWrite()</code>.</p>
@@ -122,8 +122,8 @@ void loop() {
 <p>Each LED draws about 9.1 mA, so all three on is 3 &times; 9.1 = 27.3 mA (about 27.8 mA with the button pressed). Each pin sources 9.1 mA, below the 20 mA recommended per pin (40 mA absolute maximum), and the total is far below the chip's 200 mA limit, so this is within the limits. On a 1200 mAh battery, the LEDs alone would run for 1200 / 27.3 &asymp; 44 hours. The Uno board itself draws roughly 45 mA (approximate), so the real runtime is closer to 1200 / (27.3 + 45) &asymp; 17 hours. In normal use LED 1 is dimmed and LEDs 2 and 3 are off unless the button is held, so it would last longer.</p>
 
 <h3>Q3: Measured LED voltage</h3>
-<p>I measured ___ V across LED 2 with a multimeter while the button was held. The theoretical forward voltage for a red LED is about 2.0 V, so the measurement is ___ (higher / lower / about the same) because ___.</p>
-<p class="todo">TODO: measure with a multimeter, fill in the blanks, and delete this box. Red LEDs usually measure about 1.8 to 2.1 V at this current; differences come from the specific LED, the actual current, and the real supply voltage (USB is often 4.7 to 5.1 V).</p>
+<p>Measure with multimeter and state findings</p>
+<p class="todo">Red LEDs usually measure about 1.8 to 2.1 V at this current; differences come from the specific LED, the actual current, and the real supply voltage (USB is often 4.7 to 5.1 V).</p>
 
 <h3>Q4: AI tool reflection</h3>
 <p>I used an AI tool to help structure my initial page markdown layout, check my math calculations for the parallel battery draw efficiency, and quickly review my line-by-line code commenting layout structure to guarantee no lines were missed. It also assisted me with the layout of this documentation page.</p>

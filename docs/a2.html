@@ -1,63 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assignment 2: Breathing Firefly Light-Up Toy</title>
-<style>
-:root{--bg:#fff;--fg:#1d2230;--mut:#5b6275;--line:#d9d9d9;--code:#f4f4f2;--acc:#b3202f}
-@media (prefers-color-scheme:dark){:root{--bg:#14161d;--fg:#eceef4;--mut:#a3a9bb;--line:#33384a;--code:#1d2030;--acc:#ff7a88}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.65 system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
-main{max-width:760px;margin:0 auto;padding:32px 20px 80px}
-img{max-width:100%;height:auto;display:block;border-radius:4px}
-h1{font-size:2rem;line-height:1.2;margin:1.2rem 0 .3rem}
-h2{font-size:1.4rem;margin:2.4rem 0 .6rem}
-h3{font-size:1.1rem;margin:1.8rem 0 .5rem}
-a{color:var(--acc)}
-em{color:var(--mut)}
-pre,code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86rem}
-pre{background:var(--code);padding:14px;border-radius:6px;overflow-x:auto;line-height:1.5}
-code{background:var(--code);padding:1px 5px;border-radius:4px}pre code{padding:0;background:none}
-table{border-collapse:collapse;width:100%;font-size:.93rem;display:block;overflow-x:auto}
-th,td{border-bottom:1px solid var(--line);padding:6px 10px;text-align:left;white-space:nowrap}
-.todo{background:var(--code);border-left:3px solid var(--acc);padding:.5rem 1rem;font-size:.9rem}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment 2: Breathing Firefly Light-Up Toy</title>
+  <style>
+    :root {
+      --text: #1f2933;
+      --muted: #52606d;
+      --heading: #34495e;
+      --accent: #3182ce;
+      --border: #e1e4e6;
+      --surface: #ffffff;
+      --tint: #edf2f7;
+      --code-bg: #2d3748;
+      --code-text: #f7fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0 20px 60px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: #f7f8fa;
+    }
+    main { max-width: 960px; margin: 0 auto; }
+    a { color: var(--accent); }
+
+    /* Header */
+    header { padding: 24px 0 0; }
+    header h1 { margin: 0 0 10px; font-size: 2rem; line-height: 1.2; color: var(--heading); }
+    header p { margin: 0; color: var(--muted); max-width: 65ch; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .hero {
+      display: block;
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 56px;
+    }
+
+    /* Sections */
+    section { margin-top: 24px; }
+    header + section { margin-top: 24px; }
+    h2 {
+      margin: 0 0 16px;
+      padding-bottom: 6px;
+      font-size: 1.4rem;
+      color: var(--heading);
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { margin: 28px 0 10px; font-size: 1.1rem; color: var(--heading); }
+    p { margin: 0 0 14px; max-width: 75ch; }
+
+    /* Figures */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+    figure {
+      margin: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      background: #eee;
+    }
+    figcaption {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    figure.narrow { max-width: 520px; margin: 0 auto; }
+
+    /* Calculations */
+    .formula {
+      margin: 16px 0;
+      padding: 14px 16px;
+      background: var(--tint);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-x: auto;
+    }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 0.95rem; }
+    th, td { padding: 10px 12px; text-align: left; border: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--tint); color: var(--heading); }
+
+    /* Code */
+    pre {
+      margin: 16px 0 0;
+      padding: 20px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    /* Q&A */
+    .qa {
+      margin-bottom: 20px;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .qa h3 { margin-top: 0; }
+    .qa img { display: block; max-width: 100%; height: auto; margin: 0 0 12px; }
+    .qa p:last-child { margin-bottom: 0; }
+
+    /* Placeholder notes: delete these elements before submitting */
+    .todo {
+      margin: 14px 0 0;
+      padding: 10px 14px;
+      background: #fffbea;
+      border-left: 4px solid #f0b429;
+      border-radius: 0 4px 4px 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.6rem; }
+      pre { padding: 14px; font-size: 0.8rem; }
+    }
+  </style>
 </head>
 <body>
 <main>
-<p><a href="index.html">&larr; Back to home</a></p>
-<img src="firefly banner.jpg" alt="Banner image for Assignment 2">
 
-<h1>Assignment 2: Breathing Firefly Light-Up Toy</h1>
-<p>A night-light prototype for a plush toy. One LED fades in and out continuously, and holding a button lights two more LEDs.</p>
+  <header>
+    <a class="back-link" href="index.html">&larr; Back to home</a>
+    <img class="hero" src="firefly banner.jpg" alt="Banner image for Assignment 2">
+    <h1>Assignment 2: Breathing Firefly Light-Up Toy</h1>
+    <p>A night-light prototype for a plush toy: one LED fades in and out continuously, and holding a button lights two more LEDs.</p>
+  </header>
 
-<h2>1. Schematic and breadboard</h2>
+  <section>
+    <h2>1. Schematic and breadboard</h2>
+    <div class="grid">
+      <figure>
+        <img src="a2-schematic.svg" alt="Circuit schematic with three LED branches and a button with a pull-down resistor">
+        <figcaption>
+          <strong>Schematic.</strong> Three LED branches connect to Arduino pins D9, D7 and D8, each with a 330&Omega; resistor in series. The button connects 5 V to pin D2, and a 10 k&Omega; pull-down resistor connects D2 to GND. The pull-down keeps D2 reading LOW when the button is open, and limits the current to 0.5 mA when it is pressed so 5 V is never shorted to ground.
+        </figcaption>
+      </figure>
 
-<img src="a2-schematic.svg" alt="Circuit schematic with three LED branches and a button with pull-down resistor" width="420" height="420">
-<p><em><strong>Schematic.</strong> Three LED branches connect to Arduino pins D9, D7 and D8, each with a 330&#937; resistor in series. The button connects 5 V to pin D2, and a 10 k&#937; pull-down resistor connects D2 to GND. The pull-down keeps D2 reading LOW when the button is open, and limits the current to 0.5 mA when it is pressed so 5 V is never shorted to ground.</em></p>
+      <figure>
+        <img src="a2-circuit.jpg" alt="Photo of the breadboard circuit">
+        <figcaption>
+          <strong>Breadboard.</strong> The fading LED is on Digital Pin 9, and the two button-controlled LEDs are on Pins 7 and 8. Each pin feeds the LED's anode (long leg) through a 330&Omega; resistor, and the cathodes return to the shared ground rail. The button runs from the 5 V pin to Pin 2, with the 10 k&Omega; resistor from Pin 2 to ground.
+        </figcaption>
+      </figure>
+    </div>
+    <p class="todo">add breadboard photo as a2-circuit.jpg, update the captions if your LED colors or pins differ.</p>
+  </section>
 
-<img src="a2-circuit.jpg" alt="Photo of the breadboard circuit">
-<p><em><strong>Breadboard.</strong> LED 1 (red) is on Pin 9, LED 2 (red) on Pin 7 and LED 3 (red) on Pin 8. Each pin feeds the LED's anode (long leg) through a 330&#937; resistor, and the cathodes return to the shared ground rail. The button runs from the 5 V pin to Pin 2, with the 10 k&#937; resistor from Pin 2 to the ground rail.</em></p>
-<p class="todo">Add breadboard photo as a2-circuit.jpg and a banner as a2-banner.jpg, and update the caption if colors or pins differ.</p>
+  <section>
+    <h2>2. Current-limiting resistor calculations</h2>
+    <p>Each LED is sized for a target of 10 mA (0.010 A) from a 5 V pin, comfortably under the Uno's recommended 20 mA per pin. Each resistor is sized with Ohm's law:</p>
+    <div class="formula">R = (V_source &minus; V_forward) / I_target</div>
 
-<h2>2. Current-limiting resistor calculations</h2>
-<p>Each LED is sized for a target of 10 mA (0.010 A) from a 5 V pin, comfortably under the Uno's recommended 20 mA per pin:</p>
-<p>R = (V_source &minus; V_forward) / I_target</p>
-<table>
-<tr><th>Part</th><th>Forward voltage</th><th>Calculation</th><th>Resistor used</th><th>Actual current</th></tr>
-<tr><td>Red LED (&times;3)</td><td>&asymp; 2.0 V</td><td>(5 &minus; 2.0) / 0.010 = 300&#937;</td><td>330&#937;</td><td>3.0 / 330 = 9.1 mA</td></tr>
-<tr><td>Button</td><td>n/a</td><td>5 / 0.5 mA = 10 k&#937;</td><td>10 k&#937;</td><td>5 / 10,000 = 0.5 mA</td></tr>
-</table>
-<p>The LED value is rounded up to the next standard resistor (330&#937;), so the real current is slightly under 10 mA. Power in each resistor is I&sup2;R &asymp; 27 mW, far below a 1/4 W rating. For the button, 10 k&#937; is small enough to hold the pin firmly LOW and large enough to waste almost no power.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Part</th><th>Forward voltage</th><th>Calculation</th><th>Resistor used</th><th>Actual current</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Red LED (&times;3)</td><td>&asymp; 2.0 V</td><td>(5 &minus; 2.0) / 0.010 = 300&Omega;</td><td>330&Omega;</td><td>3.0 / 330 = 9.1 mA</td></tr>
+          <tr><td>Button</td><td>n/a</td><td>5 V / 0.5 mA = 10 k&Omega;</td><td>10 k&Omega;</td><td>5 / 10,000 = 0.5 mA</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px;">The LED value is rounded up to the next standard resistor, so the real current is slightly under 10 mA. Power in each LED resistor is I&sup2;R &asymp; 27 mW, far below a 1/4 W rating. For the button, 10 k&Omega; is small enough to hold the pin firmly LOW and large enough to waste almost no power.</p>
+  </section>
 
-<h2>3. Circuit in action</h2>
-<img src="a2-demo.gif" alt="Animated GIF of LED 1 fading while the button lights LED 2 and LED 3">
-<p><em><strong>Demo.</strong> LED 1 (Pin 9) breathes continuously. While the button is held, LED 2 (Pin 7) and LED 3 (Pin 8) turn on; releasing it turns them off.</em></p>
-<p class="todo">GIF and save it as a2-demo.gif.</p>
+  <section>
+    <h2>3. Circuit in action</h2>
+    <figure class="narrow">
+      <img src="a2-demo.gif" alt="Animated GIF of the fading LED while the button lights the other two LEDs">
+      <figcaption>
+        <strong>Demo.</strong> The LED on Pin 9 breathes continuously. While the button is held, the LEDs on Pin 7 and Pin 8 turn on; releasing it turns them off.
+      </figcaption>
+    </figure>
+    <p class="todo">GIF Demo</p>
+  </section>
 
-<h2>4. Firmware</h2>
-<p>A <code>for</code> loop steps LED 1's brightness with <code>analogWrite()</code>. The button is read with <code>digitalRead()</code> on every step, so it responds immediately, and LEDs 2 and 3 follow it with <code>digitalWrite()</code>.</p>
+  <section>
+    <h2>4. Firmware</h2>
+    <p>A <code>for</code> loop steps the brightness of the Pin 9 LED with <code>analogWrite()</code>. The button is read with <code>digitalRead()</code> on every step so it responds immediately, and the other two LEDs follow it with <code>digitalWrite()</code>.</p>
 
 <pre><code>// Pin for the fading LED (D9 supports PWM)
 const int LED_FADE = 9;
@@ -111,22 +264,34 @@ void loop() {
     delay(15);
   }
 }</code></pre>
+  </section>
 
-<h2>5. Questions</h2>
+  <section>
+    <h2>5. Questions</h2>
 
-<h3>Q1: Voltage across an LED with analogWrite()</h3>
-<img src="a2-voltage-graph.svg" alt="Graph of LED voltage versus time for analogWrite values 64, 128 and 255" width="660" height="380">
-<p>Pin 9's PWM runs at about 490 Hz, so one period is about 2.04 ms. The duty cycle is value/255: 64 gives 25%, 128 gives 50%, and 255 gives 100% (always on). The voltage is measured across the LED, so the "on" level is the forward voltage (about 2 V), not 5 V, because the resistor drops the other 3 V. The pulses are too fast to see, so the LED looks dimmer or brighter instead of flickering.</p>
+    <div class="qa">
+      <h3>Q1: Voltage across an LED with analogWrite()</h3>
+      <img src="a2-voltage-graph.svg" alt="Graph of LED voltage versus time for analogWrite values 64, 128 and 255">
+      <p>Pin 9's PWM runs at about 490 Hz, so one period is about 2.04 ms. The duty cycle is value/255: 64 gives 25%, 128 gives 50%, and 255 gives 100% (always on). The voltage is measured across the LED, so the "on" level is the forward voltage (about 2 V), not 5 V, because the resistor drops the other 3 V. The pulses are too fast to see, so the LED looks dimmer or brighter instead of flickering.</p>
+    </div>
 
-<h3>Q2: Total current draw and battery life</h3>
-<p>Each LED draws about 9.1 mA, so all three on is 3 &times; 9.1 = 27.3 mA (about 27.8 mA with the button pressed). Each pin sources 9.1 mA, below the 20 mA recommended per pin (40 mA absolute maximum), and the total is far below the chip's 200 mA limit, so this is within the limits. On a 1200 mAh battery, the LEDs alone would run for 1200 / 27.3 &asymp; 44 hours. The Uno board itself draws roughly 45 mA (approximate), so the real runtime is closer to 1200 / (27.3 + 45) &asymp; 17 hours. In normal use LED 1 is dimmed and LEDs 2 and 3 are off unless the button is held, so it would last longer.</p>
+    <div class="qa">
+      <h3>Q2: Total current draw and battery life</h3>
+      <p>Each LED draws about 9.1 mA, so all three on is 3 &times; 9.1 = 27.3 mA (about 27.8 mA with the button pressed). Each pin sources 9.1 mA, below the 20 mA recommended per pin (40 mA absolute maximum), and the total is far below the chip's 200 mA limit, so this is within the limits. On a 1200 mAh battery, the LEDs alone would run for 1200 / 27.3 &asymp; 44 hours. The Uno board itself draws roughly 45 mA (approximate), so the real runtime is closer to 1200 / (27.3 + 45) &asymp; 17 hours. In normal use the fading LED is dimmed and the other two are off unless the button is held, so it would last longer.</p>
+    </div>
 
-<h3>Q3: Measured LED voltage</h3>
-<p>Measure with multimeter and state findings</p>
-<p class="todo">Red LEDs usually measure about 1.8 to 2.1 V at this current; differences come from the specific LED, the actual current, and the real supply voltage (USB is often 4.7 to 5.1 V).</p>
+    <div class="qa">
+      <h3>Q3: Measured LED voltage</h3>
+      <p>I measured ___ V across one LED with a multimeter while it was on. The theoretical forward voltage for a red LED is about 2.0 V, so the measurement is ___ (higher / lower / about the same) because ___.</p>
+      <p class="todo">measure with multimeter. Red LEDs usually measure about 1.8 to 2.1 V at this current; differences come from the specific LED, the actual current, and the real supply voltage (USB is often 4.7 to 5.1 V).</p>
+    </div>
 
-<h3>Q4: AI tool reflection</h3>
-<p>I used an AI tool to help structure my initial page markdown layout, check my math calculations for the parallel battery draw efficiency, and quickly review my line-by-line code commenting layout structure to guarantee no lines were missed. It also assisted me with the layout of this documentation page.</p>
+    <div class="qa">
+      <h3>Q4: AI tool reflection</h3>
+      <p>I used an AI tool to help structure my arduino timing code and to check the resistor calculations for the different forward voltages of each LED color. It also assisted me with the layout of this documentation page.</p>
+    </div>
+  </section>
+
 </main>
 </body>
 </html>

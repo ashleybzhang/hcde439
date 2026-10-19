@@ -1,18 +1,132 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assignment 2: Breathing Firefly Light-Up Toy</title>
+<style>
+:root{--bg:#fff;--fg:#1d2230;--mut:#5b6275;--line:#d9d9d9;--code:#f4f4f2;--acc:#b3202f}
+@media (prefers-color-scheme:dark){:root{--bg:#14161d;--fg:#eceef4;--mut:#a3a9bb;--line:#33384a;--code:#1d2030;--acc:#ff7a88}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.65 system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+main{max-width:760px;margin:0 auto;padding:32px 20px 80px}
+img{max-width:100%;height:auto;display:block;border-radius:4px}
+h1{font-size:2rem;line-height:1.2;margin:1.2rem 0 .3rem}
+h2{font-size:1.4rem;margin:2.4rem 0 .6rem}
+h3{font-size:1.1rem;margin:1.8rem 0 .5rem}
+a{color:var(--acc)}
+em{color:var(--mut)}
+pre,code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86rem}
+pre{background:var(--code);padding:14px;border-radius:6px;overflow-x:auto;line-height:1.5}
+code{background:var(--code);padding:1px 5px;border-radius:4px}pre code{padding:0;background:none}
+table{border-collapse:collapse;width:100%;font-size:.93rem;display:block;overflow-x:auto}
+th,td{border-bottom:1px solid var(--line);padding:6px 10px;text-align:left;white-space:nowrap}
+.todo{background:var(--code);border-left:3px solid var(--acc);padding:.5rem 1rem;font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+<p><a href="index.html">&larr; Back to home</a></p>
+<img src="a2-banner.jpg" alt="Banner image for Assignment 2">
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+<h1>Assignment 2: Breathing Firefly Light-Up Toy</h1>
+<p>A night-light prototype for a plush toy. One LED fades in and out continuously, and holding a button lights two more LEDs.</p>
 
-    <link href="style.css" rel="stylesheet" type="text/css" />
-  </head>
-  <body>
-    <h1>Example Student's Assignment 2!</h1>
-    <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 2!</p>
-    </div>
-  </body>
+<h2>1. Schematic and breadboard</h2>
+
+<img src="a2-schematic.svg" alt="Circuit schematic with three LED branches and a button with pull-down resistor" width="420" height="420">
+<p><em><strong>Schematic.</strong> Three LED branches connect to Arduino pins D9, D7 and D8, each with a 330&#937; resistor in series. The button connects 5 V to pin D2, and a 10 k&#937; pull-down resistor connects D2 to GND. The pull-down keeps D2 reading LOW when the button is open, and limits the current to 0.5 mA when it is pressed so 5 V is never shorted to ground.</em></p>
+
+<img src="a2-circuit.jpg" alt="Photo of the breadboard circuit">
+<p><em><strong>Breadboard.</strong> LED 1 (red) is on Pin 9, LED 2 (red) on Pin 7 and LED 3 (red) on Pin 8. Each pin feeds the LED's anode (long leg) through a 330&#937; resistor, and the cathodes return to the shared ground rail. The button runs from the 5 V pin to Pin 2, with the 10 k&#937; resistor from Pin 2 to the ground rail.</em></p>
+<p class="todo">TODO: add your own breadboard photo as a2-circuit.jpg and a banner as a2-banner.jpg, and update the caption if your colors or pins differ. Delete these TODO boxes before submitting.</p>
+
+<h2>2. Current-limiting resistor calculations</h2>
+<p>Each LED is sized for a target of 10 mA (0.010 A) from a 5 V pin, comfortably under the Uno's recommended 20 mA per pin:</p>
+<p>R = (V_source &minus; V_forward) / I_target</p>
+<table>
+<tr><th>Part</th><th>Forward voltage</th><th>Calculation</th><th>Resistor used</th><th>Actual current</th></tr>
+<tr><td>Red LED (&times;3)</td><td>&asymp; 2.0 V</td><td>(5 &minus; 2.0) / 0.010 = 300&#937;</td><td>330&#937;</td><td>3.0 / 330 = 9.1 mA</td></tr>
+<tr><td>Button</td><td>n/a</td><td>5 / 0.5 mA = 10 k&#937;</td><td>10 k&#937;</td><td>5 / 10,000 = 0.5 mA</td></tr>
+</table>
+<p>The LED value is rounded up to the next standard resistor (330&#937;), so the real current is slightly under 10 mA. Power in each resistor is I&sup2;R &asymp; 27 mW, far below a 1/4 W rating. For the button, 10 k&#937; is small enough to hold the pin firmly LOW and large enough to waste almost no power.</p>
+
+<h2>3. Circuit in action</h2>
+<img src="a2-demo.gif" alt="Animated GIF of LED 1 fading while the button lights LED 2 and LED 3">
+<p><em><strong>Demo.</strong> LED 1 (Pin 9) breathes continuously. While the button is held, LED 2 (Pin 7) and LED 3 (Pin 8) turn on; releasing it turns them off.</em></p>
+<p class="todo">TODO: record your own gif or video (or embed a YouTube/Vimeo link) and save it as a2-demo.gif.</p>
+
+<h2>4. Firmware</h2>
+<p>A <code>for</code> loop steps LED 1's brightness with <code>analogWrite()</code>. The button is read with <code>digitalRead()</code> on every step, so it responds immediately, and LEDs 2 and 3 follow it with <code>digitalWrite()</code>.</p>
+
+<pre><code>// Pin for the fading LED (D9 supports PWM)
+const int LED_FADE = 9;
+// Pin for LED 2, simple on/off
+const int LED_A = 7;
+// Pin for LED 3, simple on/off
+const int LED_B = 8;
+// Pin the button is read from
+const int BUTTON = 2;
+
+// setup() runs once when the Arduino powers up
+void setup() {
+  // Make the fading LED pin an output
+  pinMode(LED_FADE, OUTPUT);
+  // Make LED 2's pin an output
+  pinMode(LED_A, OUTPUT);
+  // Make LED 3's pin an output
+  pinMode(LED_B, OUTPUT);
+  // Make the button pin an input (the external 10k resistor pulls it LOW)
+  pinMode(BUTTON, INPUT);
+}
+
+// Helper that copies the button state onto LED 2 and LED 3
+void updateButtonLEDs() {
+  // Read the button: HIGH (1) when pressed, LOW (0) when released
+  int pressed = digitalRead(BUTTON);
+  // Turn LED 2 on when pressed, off when released
+  digitalWrite(LED_A, pressed);
+  // Turn LED 3 on when pressed, off when released
+  digitalWrite(LED_B, pressed);
+}
+
+// loop() runs over and over after setup() finishes
+void loop() {
+  // For-loop: step the brightness up from 0 to 255 in increments of 5
+  for (int level = 0; level &lt;= 255; level += 5) {
+    // Set the PWM duty cycle of LED 1 to the current brightness
+    analogWrite(LED_FADE, level);
+    // Check the button on every step so it never feels laggy
+    updateButtonLEDs();
+    // Wait 15 ms so the fade is smooth (about 0.8 s to go up)
+    delay(15);
+  }
+  // For-loop: step the brightness back down from 255 to 0
+  for (int level = 255; level &gt;= 0; level -= 5) {
+    // Set the PWM duty cycle of LED 1 to the current brightness
+    analogWrite(LED_FADE, level);
+    // Check the button on every step
+    updateButtonLEDs();
+    // Wait 15 ms between steps (about 0.8 s to go down)
+    delay(15);
+  }
+}</code></pre>
+
+<h2>5. Questions</h2>
+
+<h3>Q1: Voltage across an LED with analogWrite()</h3>
+<img src="a2-voltage-graph.svg" alt="Graph of LED voltage versus time for analogWrite values 64, 128 and 255" width="660" height="380">
+<p>Pin 9's PWM runs at about 490 Hz, so one period is about 2.04 ms. The duty cycle is value/255: 64 gives 25%, 128 gives 50%, and 255 gives 100% (always on). The voltage is measured across the LED, so the "on" level is the forward voltage (about 2 V), not 5 V, because the resistor drops the other 3 V. The pulses are too fast to see, so the LED looks dimmer or brighter instead of flickering.</p>
+
+<h3>Q2: Total current draw and battery life</h3>
+<p>Each LED draws about 9.1 mA, so all three on is 3 &times; 9.1 = 27.3 mA (about 27.8 mA with the button pressed). Each pin sources 9.1 mA, below the 20 mA recommended per pin (40 mA absolute maximum), and the total is far below the chip's 200 mA limit, so this is within the limits. On a 1200 mAh battery, the LEDs alone would run for 1200 / 27.3 &asymp; 44 hours. The Uno board itself draws roughly 45 mA (approximate), so the real runtime is closer to 1200 / (27.3 + 45) &asymp; 17 hours. In normal use LED 1 is dimmed and LEDs 2 and 3 are off unless the button is held, so it would last longer.</p>
+
+<h3>Q3: Measured LED voltage</h3>
+<p>I measured ___ V across LED 2 with a multimeter while the button was held. The theoretical forward voltage for a red LED is about 2.0 V, so the measurement is ___ (higher / lower / about the same) because ___.</p>
+<p class="todo">TODO: measure with a multimeter, fill in the blanks, and delete this box. Red LEDs usually measure about 1.8 to 2.1 V at this current; differences come from the specific LED, the actual current, and the real supply voltage (USB is often 4.7 to 5.1 V).</p>
+
+<h3>Q4: AI tool reflection</h3>
+<p>I used an AI tool to help structure my initial page markdown layout, check my math calculations for the parallel battery draw efficiency, and quickly review my line-by-line code commenting layout structure to guarantee no lines were missed. It also assisted me with the layout of this documentation page.</p>
+</main>
+</body>
 </html>

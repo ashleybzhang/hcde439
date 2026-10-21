@@ -169,13 +169,12 @@
       </figure>
 
       <figure>
-        <img src="a2-circuit.jpg" alt="Photo of the breadboard circuit">
+        <img src="firefly_circuit.jpg" alt="Photo of the breadboard circuit">
         <figcaption>
           <strong>Breadboard.</strong> The fading LED is on Digital Pin 9, and the two button-controlled LEDs are on Pins 7 and 8. Each pin feeds the LED's anode (long leg) through a 330&Omega; resistor, and the cathodes return to the shared ground rail. The button runs from the 5 V pin to Pin 2, with the 10 k&Omega; resistor from Pin 2 to ground.
         </figcaption>
       </figure>
     </div>
-    <p class="todo">add breadboard photo as a2-circuit.jpg, update the captions if your LED colors or pins differ.</p>
   </section>
 
   <section>
@@ -200,12 +199,11 @@
   <section>
     <h2>3. Circuit in action</h2>
     <figure class="narrow">
-      <img src="a2-demo.gif" alt="Animated GIF of the fading LED while the button lights the other two LEDs">
+      <img src="firefly gif.gif" alt="Animated GIF of the fading LED while the button lights the other two LEDs">
       <figcaption>
         <strong>Demo.</strong> The LED on Pin 9 breathes continuously. While the button is held, the LEDs on Pin 7 and Pin 8 turn on; releasing it turns them off.
       </figcaption>
     </figure>
-    <p class="todo">GIF Demo</p>
   </section>
 
   <section>
@@ -282,8 +280,7 @@ void loop() {
 
     <div class="qa">
       <h3>Q3: Measured LED voltage</h3>
-      <p>I measured ___ V across one LED with a multimeter while it was on. The theoretical forward voltage for a red LED is about 2.0 V, so the measurement is ___ (higher / lower / about the same) because ___.</p>
-      <p class="todo">measure with multimeter. Red LEDs usually measure about 1.8 to 2.1 V at this current; differences come from the specific LED, the actual current, and the real supply voltage (USB is often 4.7 to 5.1 V).</p>
+      <p>I measured 1.9 V across LED 2 (pin 7) with a multimeter while it was on. The theoretical forward voltage for a red LED is about 2.0 V, so my measurement was about 0.1 V (5%) lower. This is expected because 2.0 V is a typical datasheet value, and individual LEDs vary slightly in their forward voltage. Forward voltage also changes a bit with current and temperature. Since the LED dropped slightly less than the 2.0 V I used in my calculation, a bit more voltage is left across the 330 Ω resistor, so the real current is about (5 - 1.9) / 330 ≈ 9.4 mA instead of 9.1 mA.</p>
     </div>
 
     <div class="qa">

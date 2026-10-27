@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment 3: Dusk-o-meter Night Light</title>
+  <style>
+    :root {
+      --text: #1f2933;
+      --muted: #52606d;
+      --heading: #34495e;
+      --accent: #3182ce;
+      --border: #e1e4e6;
+      --surface: #ffffff;
+      --tint: #edf2f7;
+      --code-bg: #2d3748;
+      --code-text: #f7fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0 20px 60px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: #f7f8fa;
+    }
+    main { max-width: 960px; margin: 0 auto; }
+    a { color: var(--accent); }
+
+    /* Header */
+    header { padding: 24px 0 0; }
+    header h1 { margin: 0 0 10px; font-size: 2rem; line-height: 1.2; color: var(--heading); }
+    header p { margin: 0; color: var(--muted); max-width: 65ch; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .hero {
+      display: block;
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 56px;
+    }
+
+    /* Sections */
+    section { margin-top: 24px; }
+    header + section { margin-top: 24px; }
+    h2 {
+      margin: 0 0 16px;
+      padding-bottom: 6px;
+      font-size: 1.4rem;
+      color: var(--heading);
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { margin: 28px 0 10px; font-size: 1.1rem; color: var(--heading); }
+    p { margin: 0 0 14px; max-width: 75ch; }
+
+    /* Figures */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+    figure {
+      margin: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      background: #eee;
+    }
+    figcaption {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    figure.narrow { max-width: 520px; margin: 0 auto; }
+
+    /* Calculations */
+    .formula {
+      margin: 16px 0;
+      padding: 14px 16px;
+      background: var(--tint);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-x: auto;
+    }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 0.95rem; }
+    th, td { padding: 10px 12px; text-align: left; border: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--tint); color: var(--heading); }
+
+    /* Code */
+    pre {
+      margin: 16px 0 0;
+      padding: 20px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    /* Q&A */
+    .qa {
+      margin-bottom: 20px;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .qa h3 { margin-top: 0; }
+    .qa img, .qa svg { display: block; max-width: 100%; height: auto; margin: 0 0 12px; }
+    .qa p:last-child { margin-bottom: 0; }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.6rem; }
+      pre { padding: 14px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <header>
+    <a class="back-link" href="index.html">&larr; Back to home</a>
+    <img class="hero" src="duskometer banner.png" alt="Banner image for Assignment 3">
+    <h1>Assignment 3: Dusk-o-meter Night Light</h1>
+    <p>A smart-home night light prototype: a photoresistor measures how bright the room is, and three LEDs fade up as the room gets darker.</p>
+  </header>
+
+  <section>
+    <h2>1. Schematic and breadboard</h2>
+    <div class="grid">
+      <figure>
+        <img src="a3-schematic.png" alt="Schematic of a photoresistor voltage divider connected to A0 and three LEDs with resistors on pins 9, 10 and 11">
+        <figcaption>
+          <strong>Schematic.</strong> 5 V runs through the photoresistor (R1), then to the A0 node (V-measure), then through a 10 k&Omega; resistor (R2) to GND. Three LED branches connect to pins D9, D10 and D11, each with a 220&Omega; resistor in series. I chose 10 k&Omega; for R2 because it sits near the middle of the photoresistor's range, so the voltage swings across most of 0&ndash;5 V (calculation below).
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img src="a3-circuit.jpg" alt="Photo of the breadboard circuit">
+        <figcaption>
+          <strong>Breadboard.</strong> The photoresistor and the 10 k&Omega; resistor share a row, and a jumper from that row goes to A0. The three LEDs are on pins 9, 10 and 11 (all PWM pins), each LED's anode (long leg) goes through a 220&Omega; resistor, and the cathodes return to the shared ground rail.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Voltage divider calculations</h2>
+    <p>The photoresistor is R1 (top) and the fixed resistor is R2 (bottom). A0 reads the voltage between them:</p>
+    <div class="formula">V_measure = 5 V &times; R2 / (R1 + R2)</div>
+    <p>My photoresistor goes from roughly 1 k&Omega; in bright light to 100 k&Omega; in the dark. A good fixed resistor is about the geometric mean of those two, so R2 = &radic;(1 k&Omega; &times; 100 k&Omega;) &asymp; 10 k&Omega;.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Condition</th><th>Photoresistor (R1)</th><th>Calculation</th><th>V_measure</th><th>analogRead (V &times; 1023 / 5)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Very bright</td><td>1 k&Omega;</td><td>5 &times; 10 / (1 + 10)</td><td>4.55 V</td><td>&asymp; 931</td></tr>
+          <tr><td>Normal room</td><td>10 k&Omega;</td><td>5 &times; 10 / (10 + 10)</td><td>2.50 V</td><td>&asymp; 512</td></tr>
+          <tr><td>Dim</td><td>50 k&Omega;</td><td>5 &times; 10 / (50 + 10)</td><td>0.83 V</td><td>&asymp; 170</td></tr>
+          <tr><td>Dark</td><td>100 k&Omega;</td><td>5 &times; 10 / (100 + 10)</td><td>0.45 V</td><td>&asymp; 93</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>LED resistors</h3>
+    <div class="formula">R = (V_source &minus; V_forward) / I_target = (5 &minus; 2.0) / 0.010 = 300&Omega; &rarr; 220&Omega; used</div>
+    <p>With 220&Omega; each red LED draws about (5 &minus; 2.0) / 220 &asymp; 13.6 mA, under the Uno's recommended 20 mA per pin. I went with 220&Omega; so the night light is a bit brighter.</p>
+  </section>
+
+  <section>
+    <h2>3. Circuit in action</h2>
+    <figure class="narrow">
+      <img src="a3-demo.gif" alt="Animated GIF of a hand covering the photoresistor and the three LEDs fading on">
+      <figcaption>
+        <strong>Demo.</strong> When I cover the photoresistor, the LEDs fade up. When I uncover it, they fade back down and switch off once the room is bright again.
+      </figcaption>
+    </figure>
+
+    <h3>Serial monitor output</h3>
+<pre><code>Dusk-o-meter | daylight, lights off | light: 780 | volts: 3.81 | LED brightness: 0
+Dusk-o-meter | daylight, lights off | light: 760 | volts: 3.71 | LED brightness: 0
+Dusk-o-meter | daylight, lights off | light: 410 | volts: 2.00 | LED brightness: 0
+Dusk-o-meter | NIGHT LIGHT ON  | light: 180 | volts: 0.88 | LED brightness: 230
+Dusk-o-meter | NIGHT LIGHT ON  | light: 120 | volts: 0.59 | LED brightness: 249
+Dusk-o-meter | NIGHT LIGHT ON  | light: 150 | volts: 0.73 | LED brightness: 240
+Dusk-o-meter | daylight, lights off | light: 420 | volts: 2.05 | LED brightness: 0
+Dusk-o-meter | daylight, lights off | light: 700 | volts: 3.42 | LED brightness: 0</code></pre>
+  </section>
+
+  <section>
+    <h2>4. Firmware</h2>
+    <p>The sketch reads the divider with <code>analogRead()</code>, uses <code>map()</code> to turn that reading into a brightness (darker means brighter), and an <code>if</code>-statement decides whether the night light is on. The LEDs are driven with <code>analogWrite()</code>.</p>
+
+<pre><code>// The analog pin that reads the voltage divider (V-measure)
+const int SENSOR_PIN = A0;
+// PWM pin for the first LED
+const int LED_ONE = 9;
+// PWM pin for the second LED
+const int LED_TWO = 10;
+// PWM pin for the third LED
+const int LED_THREE = 11;
+// Readings below this number mean the room is dark (about 1.5 V at the divider)
+const int DARK_THRESHOLD = 300;
+
+// setup() runs once when the Arduino powers up
+void setup() {
+  // Start the serial connection so I can watch readings on my computer
+  Serial.begin(9600);
+  // Set the first LED pin as an output
+  pinMode(LED_ONE, OUTPUT);
+  // Set the second LED pin as an output
+  pinMode(LED_TWO, OUTPUT);
+  // Set the third LED pin as an output
+  pinMode(LED_THREE, OUTPUT);
+}
+
+// loop() runs over and over after setup() finishes
+void loop() {
+  // Read the voltage divider as a number from 0 to 1023
+  int lightValue = analogRead(SENSOR_PIN);
+  // Convert that reading back into volts (5 V is the Arduino's reference)
+  float volts = lightValue * (5.0 / 1023.0);
+  // Flip the range: my darkest reading (100) becomes full brightness (255), my brightest (900) becomes off (0)
+  int brightness = map(lightValue, 100, 900, 255, 0);
+  // map() does not stop at the ends, so keep brightness between 0 and 255
+  brightness = constrain(brightness, 0, 255);
+
+  // Check if the room is dark enough to need a night light
+  if (lightValue &lt; DARK_THRESHOLD) {
+    // Set the first LED to the mapped brightness
+    analogWrite(LED_ONE, brightness);
+    // Set the second LED to the mapped brightness
+    analogWrite(LED_TWO, brightness);
+    // Set the third LED to the mapped brightness
+    analogWrite(LED_THREE, brightness);
+    // Print the label for the dark state
+    Serial.print("Dusk-o-meter | NIGHT LIGHT ON  | light: ");
+  } else {
+    // Turn the first LED off
+    analogWrite(LED_ONE, 0);
+    // Turn the second LED off
+    analogWrite(LED_TWO, 0);
+    // Turn the third LED off
+    analogWrite(LED_THREE, 0);
+    // Print the label for the bright state
+    Serial.print("Dusk-o-meter | daylight, lights off | light: ");
+  }
+
+  // Print the raw reading
+  Serial.print(lightValue);
+  // Print a separator and the voltage label
+  Serial.print(" | volts: ");
+  // Print the voltage with two decimal places
+  Serial.print(volts, 2);
+  // Print the label for brightness
+  Serial.print(" | LED brightness: ");
+  // Print the brightness value and end the line
+  Serial.println(brightness);
+
+  // Wait 200 ms so the serial monitor is readable and the readings are not jittery
+  delay(200);
+}</code></pre>
+
+    <h3>Why these values?</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Value in code</th><th>What it corresponds to in the circuit</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>A0</code></td><td>The node between the photoresistor and the 10 k&Omega; resistor (V-measure).</td></tr>
+          <tr><td><code>9, 10, 11</code></td><td>The three LED branches. These are PWM pins, which <code>analogWrite()</code> needs.</td></tr>
+          <tr><td><code>map(..., 100, 900, 255, 0)</code></td><td>100 and 900 are the lowest and highest readings I saw (about 0.49 V and 4.4 V at the divider). 255 is the max <code>analogWrite()</code> value. The output is reversed on purpose so darker means brighter LEDs.</td></tr>
+          <tr><td><code>DARK_THRESHOLD = 300</code></td><td>About 1.5 V at the divider, which means the photoresistor is around 23 k&Omega; with my 10 k&Omega; resistor. That's about when a room starts to feel dim, so normal indoor light keeps the LEDs off.</td></tr>
+          <tr><td><code>delay(200)</code></td><td>Five readings a second feels live without flooding the serial monitor.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Questions</h2>
+
+    <div class="qa">
+      <h3>Q1: Can the variable resistor be R1 or R2?</h3>
+      <p>Either one works. Swapping them doesn't change how far the voltage can swing, it only flips the direction. With a 10 k&Omega; fixed resistor and a photoresistor that goes from 1 k&Omega; (bright) to 100 k&Omega; (dark):</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Setup</th><th>Bright (1 k&Omega;)</th><th>Dark (100 k&Omega;)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Photoresistor as R1 (top)<br>V = 5 &times; 10 / (R1 + 10)</td><td>5 &times; 10 / 11 = 4.55 V</td><td>5 &times; 10 / 110 = 0.45 V</td></tr>
+            <tr><td>Photoresistor as R2 (bottom)<br>V = 5 &times; R2 / (10 + R2)</td><td>5 &times; 1 / 11 = 0.45 V</td><td>5 &times; 100 / 110 = 4.55 V</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px;">With the sensor on top, more light means a higher voltage. On the bottom, more light means a lower voltage. I used the top so "more light = bigger number," but if I flipped it I'd just flip the <code>map()</code> output range and the <code>if</code> comparison.</p>
+    </div>
+
+    <div class="qa">
+      <h3>Q2: Voltage at V-measure over time</h3>
+      <svg id="graph" viewBox="0 0 640 320" width="100%" role="img" aria-label="Line graph of V-measure in volts over time while covering and uncovering the photoresistor"></svg>
+      <p>This is V_measure from my demo. The voltage drops when I cover the sensor, stays low while it's covered, and climbs back up when I uncover it. The dashed red line is the 1.47 V threshold (reading of 300) where the LEDs switch on.</p>
+    </div>
+
+    <div class="qa">
+      <h3>Q3: 10-bit PWM and a 16-bit ADC</h3>
+      <p>The <code>map()</code> numbers would need to change on both sides. A 16-bit ADC reads 0&ndash;65535 instead of 0&ndash;1023, and 10-bit PWM writes 0&ndash;1023 instead of 0&ndash;255. So <code>map(lightValue, 100, 900, 255, 0)</code> would become about <code>map(lightValue, 6400, 57600, 1023, 0)</code>, since the input range scales up by 64 (65536 / 1024). The threshold of 300 would become about 19200 because it still means about 1.5 V.</p>
+      <p>The physical voltages stay the same, but the resolution improves. Each ADC step drops from about 4.9 mV to about 0.076 mV, and the LEDs get 1024 brightness levels instead of 256, so fades look smoother. <code>map()</code> uses long integers on Arduino, so the bigger numbers (65535 &times; 1023 is about 67 million) still fit without overflow.</p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Sample readings, one every 0.2 s (matches delay(200)). Replace with your own serial data.
+  const readings = [780,775,770,765,740,600,410,250,180,150,120,130,150,140,160,300,420,560,700,760,785,790];
+  // Seconds between samples
+  const dt = 0.2;
+  // Convert readings to volts
+  const volts = readings.map(r => r * 5 / 1023);
+
+  const svg = document.getElementById('graph');
+  const W = 640, H = 320, L = 60, R = 20, T = 20, B = 50;
+  const x = i => L + (i / (volts.length - 1)) * (W - L - R);
+  const y = v => H - B - (v / 5) * (H - T - B);
+
+  let out = '';
+  // Horizontal gridlines and y labels
+  for (let v = 0; v <= 5; v++) {
+    out += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#e1e4e6"/>`;
+    out += `<text x="${L - 8}" y="${y(v) + 4}" font-size="12" fill="#52606d" text-anchor="end">${v}</text>`;
+  }
+  // X labels every 5 samples
+  for (let i = 0; i < volts.length; i += 5) {
+    out += `<text x="${x(i)}" y="${H - B + 18}" font-size="12" fill="#52606d" text-anchor="middle">${(i * dt).toFixed(1)}</text>`;
+  }
+  // Threshold line at reading 300
+  const thr = 300 * 5 / 1023;
+  out += `<line x1="${L}" x2="${W - R}" y1="${y(thr)}" y2="${y(thr)}" stroke="#c0392b" stroke-dasharray="6 4"/>`;
+  out += `<text x="${W - R}" y="${y(thr) - 6}" font-size="12" fill="#c0392b" text-anchor="end">threshold ≈ 1.47 V</text>`;
+  // Data line and points
+  out += `<polyline fill="none" stroke="#3182ce" stroke-width="2.5" points="${volts.map((v, i) => x(i) + ',' + y(v)).join(' ')}"/>`;
+  volts.forEach((v, i) => { out += `<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="#3182ce"/>`; });
+  // Axis titles
+  out += `<text x="${(L + W - R) / 2}" y="${H - 8}" font-size="13" fill="#1f2933" text-anchor="middle">Time (s)</text>`;
+  out += `<text transform="translate(16 ${(T + H - B) / 2}) rotate(-90)" font-size="13" fill="#1f2933" text-anchor="middle">V-measure (V)</text>`;
+  svg.innerHTML = out;
+</script>
+</body>
+</html>

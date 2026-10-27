@@ -154,7 +154,7 @@
       <figure>
         <img src="duskometer schematic.jpg" alt="Schematic of a photoresistor voltage divider connected to A0 and three LEDs with resistors on pins 9, 10 and 11">
         <figcaption>
-          <strong>Schematic.</strong> 5 V runs through the photoresistor (R1), then to the A0 node (V-measure), then through a 10 k&Omega; resistor (R2) to GND. Three LED branches connect to pins D9, D10 and D11, each with a 220&Omega; resistor in series. I chose 10 k&Omega; for R2 because it sits near the middle of the photoresistor's range, so the voltage swings across most of 0&ndash;5 V (calculation below).
+          <strong>Schematic.</strong> 5 V runs through the photoresistor (R1), then to the A0 node (V-out), then through a 10 k&Omega; resistor (R2) to GND. Three LED branches connect to pins D9, D10 and D11, each with a 220&Omega; resistor in series. I chose 10 k&Omega; for R2 because it sits near the middle of the photoresistor's range, so the voltage swings across most of 0&ndash;5 V (calculation below).
         </figcaption>
       </figure>
 
@@ -170,13 +170,13 @@
   <section>
     <h2>2. Voltage divider calculations</h2>
     <p>The photoresistor is R1 (top) and the fixed resistor is R2 (bottom). A0 reads the voltage between them:</p>
-    <div class="formula">V_measure = 5 V &times; R2 / (R1 + R2)</div>
+    <div class="formula">V_out = 5 V &times; R2 / (R1 + R2)</div>
     <p>My photoresistor goes from roughly 1 k&Omega; in bright light to 100 k&Omega; in the dark. A good fixed resistor is about the geometric mean of those two, so R2 = &radic;(1 k&Omega; &times; 100 k&Omega;) &asymp; 10 k&Omega;.</p>
 
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Condition</th><th>Photoresistor (R1)</th><th>Calculation</th><th>V_measure</th><th>analogRead (V &times; 1023 / 5)</th></tr>
+          <tr><th>Condition</th><th>Photoresistor (R1)</th><th>Calculation</th><th>V_out</th><th>analogRead (V &times; 1023 / 5)</th></tr>
         </thead>
         <tbody>
           <tr><td>Very bright</td><td>1 k&Omega;</td><td>5 &times; 10 / (1 + 10)</td><td>4.55 V</td><td>&asymp; 931</td></tr>
@@ -216,7 +216,7 @@ Dusk-o-meter | NIGHT LIGHT ON  | light: 171 | volts: 0.84 | LED brightness: 165
     <h2>4. Firmware</h2>
     <p>The sketch reads the divider with <code>analogRead()</code>, uses <code>map()</code> to turn that reading into a brightness (darker means brighter), and an <code>if</code>-statement decides whether the night light is on. The LEDs are driven with <code>analogWrite()</code>.</p>
 
-<pre><code>// The analog pin that reads the voltage divider (V-measure)
+<pre><code>// The analog pin that reads the voltage divider (V-out)
 const int SENSOR_PIN = A0;
 // PWM pin for the first LED
 const int LED_ONE = 9;
@@ -295,7 +295,7 @@ void loop() {
           <tr><th>Value in code</th><th>What it corresponds to in the circuit</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>A0</code></td><td>The node between the photoresistor and the 10 k&Omega; resistor (V-measure).</td></tr>
+          <tr><td><code>A0</code></td><td>The node between the photoresistor and the 10 k&Omega; resistor (V-out).</td></tr>
           <tr><td><code>9, 10, 11</code></td><td>The three LED branches. These are PWM pins, which <code>analogWrite()</code> needs.</td></tr>
           <tr><td><code>map(..., 100, DARK_THRESHOLD, 255, 0)</code></td><td>100 is the lowest reading I saw (about 0.49 V at the divider) and 300 is the threshold where the lights switch on. 255 is the max <code>analogWrite()</code> value. The output is reversed on purpose so darker means brighter LEDs, and ending the range at the threshold means the LEDs fade up from 0 instead of jumping on, which stops flickering when the reading hovers near 300.</td></tr>
           <tr><td><code>DARK_THRESHOLD = 300</code></td><td>About 1.5 V at the divider, which means the photoresistor is around 23 k&Omega; with my 10 k&Omega; resistor. That's about when a room starts to feel dim, so normal indoor light keeps the LEDs off.</td></tr>
@@ -326,9 +326,9 @@ void loop() {
     </div>
 
     <div class="qa">
-      <h3>Q2: Voltage at V-measure over time</h3>
-      <svg id="graph" viewBox="0 0 640 320" width="100%" role="img" aria-label="Line graph of V-measure in volts over time while covering and uncovering the photoresistor"></svg>
-      <p>This is V_measure from my demo. The voltage drops when I cover the sensor, stays low while it's covered, and climbs back up when I uncover it. The dashed red line is the 1.47 V threshold (reading of 300) where the LEDs switch on.</p>
+      <h3>Q2: Voltage at V-out over time</h3>
+      <svg id="graph" viewBox="0 0 640 320" width="100%" role="img" aria-label="Line graph of V-out in volts over time while covering and uncovering the photoresistor"></svg>
+      <p>This is V_out from my demo. The voltage drops when I cover the sensor, stays low while it's covered, and climbs back up when I uncover it. The dashed red line is the 1.47 V threshold (reading of 300) where the LEDs switch on.</p>
     </div>
 
     <div class="qa">

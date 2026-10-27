@@ -188,8 +188,8 @@
     </div>
 
     <h3>LED resistors</h3>
-    <div class="formula">R = (V_source &minus; V_forward) / I_target = (5 &minus; 2.0) / 0.010 = 300&Omega; &rarr; 220&Omega; used</div>
-    <p>With 220&Omega; each red LED draws about (5 &minus; 2.0) / 220 &asymp; 13.6 mA, under the Uno's recommended 20 mA per pin. I went with 220&Omega; so the night light is a bit brighter.</p>
+    <div class="formula">R = (V_source &minus; V_forward) / I_target = (5 &minus; 2.1) / 0.010 = 290&Omega; &rarr; 220&Omega; used</div>
+    <p>With 220&Omega; each yellow LED (forward voltage about 2.1 V) draws about (5 &minus; 2.1) / 220 &asymp; 13.2 mA, under the Uno's recommended 20 mA per pin. I went with 220&Omega; so the night light is a bit brighter.</p>
   </section>
 
   <section>
@@ -202,14 +202,14 @@
     </figure>
 
     <h3>Serial monitor output</h3>
-<pre><code>Dusk-o-meter | daylight, lights off | light: 780 | volts: 3.81 | LED brightness: 0
-Dusk-o-meter | daylight, lights off | light: 760 | volts: 3.71 | LED brightness: 0
-Dusk-o-meter | daylight, lights off | light: 410 | volts: 2.00 | LED brightness: 0
-Dusk-o-meter | NIGHT LIGHT ON  | light: 180 | volts: 0.88 | LED brightness: 230
-Dusk-o-meter | NIGHT LIGHT ON  | light: 120 | volts: 0.59 | LED brightness: 249
-Dusk-o-meter | NIGHT LIGHT ON  | light: 150 | volts: 0.73 | LED brightness: 240
-Dusk-o-meter | daylight, lights off | light: 420 | volts: 2.05 | LED brightness: 0
-Dusk-o-meter | daylight, lights off | light: 700 | volts: 3.42 | LED brightness: 0</code></pre>
+<pre><code>Dusk-o-meter | daylight, lights off | light: 407 | volts: 1.99 | LED brightness: 0
+Dusk-o-meter | daylight, lights off | light: 384 | volts: 1.88 | LED brightness: 0
+Dusk-o-meter | daylight, lights off | light: 317 | volts: 1.55 | LED brightness: 0
+Dusk-o-meter | NIGHT LIGHT ON  | light: 207 | volts: 1.01 | LED brightness: 119
+Dusk-o-meter | NIGHT LIGHT ON  | light: 158 | volts: 0.77 | LED brightness: 182
+Dusk-o-meter | NIGHT LIGHT ON  | light: 186 | volts: 0.91 | LED brightness: 146
+Dusk-o-meter | NIGHT LIGHT ON  | light: 171 | volts: 0.84 | LED brightness: 165
+</code></pre>
   </section>
 
   <section>
@@ -245,8 +245,8 @@ void loop() {
   int lightValue = analogRead(SENSOR_PIN);
   // Convert that reading back into volts (5 V is the Arduino's reference)
   float volts = lightValue * (5.0 / 1023.0);
-  // Flip the range: my darkest reading (100) becomes full brightness (255), my brightest (900) becomes off (0)
-  int brightness = map(lightValue, 100, 900, 255, 0);
+  // Flip the range: my darkest reading (100) becomes full brightness (255), and the dark threshold (300) becomes off (0)
+  int brightness = map(lightValue, 100, DARK_THRESHOLD, 255, 0);
   // map() does not stop at the ends, so keep brightness between 0 and 255
   brightness = constrain(brightness, 0, 255);
 
@@ -267,6 +267,8 @@ void loop() {
     analogWrite(LED_TWO, 0);
     // Turn the third LED off
     analogWrite(LED_THREE, 0);
+    // Report a brightness of 0 so the serial output matches the LEDs being off
+    brightness = 0;
     // Print the label for the bright state
     Serial.print("Dusk-o-meter | daylight, lights off | light: ");
   }
@@ -295,7 +297,7 @@ void loop() {
         <tbody>
           <tr><td><code>A0</code></td><td>The node between the photoresistor and the 10 k&Omega; resistor (V-measure).</td></tr>
           <tr><td><code>9, 10, 11</code></td><td>The three LED branches. These are PWM pins, which <code>analogWrite()</code> needs.</td></tr>
-          <tr><td><code>map(..., 100, 900, 255, 0)</code></td><td>100 and 900 are the lowest and highest readings I saw (about 0.49 V and 4.4 V at the divider). 255 is the max <code>analogWrite()</code> value. The output is reversed on purpose so darker means brighter LEDs.</td></tr>
+          <tr><td><code>map(..., 100, DARK_THRESHOLD, 255, 0)</code></td><td>100 is the lowest reading I saw (about 0.49 V at the divider) and 300 is the threshold where the lights switch on. 255 is the max <code>analogWrite()</code> value. The output is reversed on purpose so darker means brighter LEDs, and ending the range at the threshold means the LEDs fade up from 0 instead of jumping on, which stops flickering when the reading hovers near 300.</td></tr>
           <tr><td><code>DARK_THRESHOLD = 300</code></td><td>About 1.5 V at the divider, which means the photoresistor is around 23 k&Omega; with my 10 k&Omega; resistor. That's about when a room starts to feel dim, so normal indoor light keeps the LEDs off.</td></tr>
           <tr><td><code>delay(200)</code></td><td>Five readings a second feels live without flooding the serial monitor.</td></tr>
         </tbody>
@@ -331,7 +333,7 @@ void loop() {
 
     <div class="qa">
       <h3>Q3: 10-bit PWM and a 16-bit ADC</h3>
-      <p>The <code>map()</code> numbers would need to change on both sides. A 16-bit ADC reads 0&ndash;65535 instead of 0&ndash;1023, and 10-bit PWM writes 0&ndash;1023 instead of 0&ndash;255. So <code>map(lightValue, 100, 900, 255, 0)</code> would become about <code>map(lightValue, 6400, 57600, 1023, 0)</code>, since the input range scales up by 64 (65536 / 1024). The threshold of 300 would become about 19200 because it still means about 1.5 V.</p>
+      <p>The <code>map()</code> numbers would need to change on both sides. A 16-bit ADC reads 0&ndash;65535 instead of 0&ndash;1023, and 10-bit PWM writes 0&ndash;1023 instead of 0&ndash;255. So <code>map(lightValue, 100, 300, 255, 0)</code> would become about <code>map(lightValue, 6400, 19200, 1023, 0)</code>, since the input range scales up by 64 (65536 / 1024). The threshold of 300 would become about 19200 because it still means about 1.5 V.</p>
       <p>The physical voltages stay the same, but the resolution improves. Each ADC step drops from about 4.9 mV to about 0.076 mV, and the LEDs get 1024 brightness levels instead of 256, so fades look smoother. <code>map()</code> uses long integers on Arduino, so the bigger numbers (65535 &times; 1023 is about 67 million) still fit without overflow.</p>
     </div>
   </section>

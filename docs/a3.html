@@ -152,7 +152,7 @@
     <h2>1. Schematic and breadboard</h2>
     <div class="grid">
       <figure>
-        <img src="a3-schematic.png" alt="Schematic of a photoresistor voltage divider connected to A0 and three LEDs with resistors on pins 9, 10 and 11">
+        <img src="duskometer schematic.jpg" alt="Schematic of a photoresistor voltage divider connected to A0 and three LEDs with resistors on pins 9, 10 and 11">
         <figcaption>
           <strong>Schematic.</strong> 5 V runs through the photoresistor (R1), then to the A0 node (V-measure), then through a 10 k&Omega; resistor (R2) to GND. Three LED branches connect to pins D9, D10 and D11, each with a 220&Omega; resistor in series. I chose 10 k&Omega; for R2 because it sits near the middle of the photoresistor's range, so the voltage swings across most of 0&ndash;5 V (calculation below).
         </figcaption>
@@ -197,7 +197,7 @@
     <figure class="narrow">
       <img src="duskometer demo.gif" alt="Animated GIF of a hand covering the photoresistor and the three LEDs fading on">
       <figcaption>
-        <strong>Demo.</strong> When I cover the photoresistor, the LEDs fade up. When I uncover it, they fade back down and switch off once the room is bright again.
+        <strong>Demo.</strong> When I turn off the light, the LEDs fade up. When I turn the light on again, they fade back down and switch off once the photoresistor can sense that there is light again.
       </figcaption>
     </figure>
 

@@ -298,7 +298,7 @@ void loop() {
           <tr><td><code>A0</code></td><td>The node between the photoresistor and the 10 k&Omega; resistor (V-out).</td></tr>
           <tr><td><code>9, 10, 11</code></td><td>The three LED branches. These are PWM pins, which <code>analogWrite()</code> needs.</td></tr>
           <tr><td><code>map(..., 100, DARK_THRESHOLD, 255, 0)</code></td><td>100 is the lowest reading I saw (about 0.49 V at the divider) and 300 is the threshold where the lights switch on. 255 is the max <code>analogWrite()</code> value. The output is reversed on purpose so darker means brighter LEDs, and ending the range at the threshold means the LEDs fade up from 0 instead of jumping on, which stops flickering when the reading hovers near 300.</td></tr>
-          <tr><td><code>DARK_THRESHOLD = 300</code></td><td>About 1.5 V at the divider, which means the photoresistor is around 23 k&Omega; with my 10 k&Omega; resistor. That's about when a room starts to feel dim, so normal indoor light keeps the LEDs off.</td></tr>
+          <tr><td><code>DARK_THRESHOLD = 300</code></td><td>About 1.5 V at the divider, which means the photoresistor is around 24 k&Omega; with my 10 k&Omega; resistor. That's about when a room starts to feel dim, so normal indoor light keeps the LEDs off.</td></tr>
           <tr><td><code>delay(200)</code></td><td>Five readings a second feels live without flooding the serial monitor.</td></tr>
         </tbody>
       </table>
@@ -328,7 +328,7 @@ void loop() {
     <div class="qa">
       <h3>Q2: Voltage at V-out over time</h3>
       <svg id="graph" viewBox="0 0 640 320" width="100%" role="img" aria-label="Line graph of V-out in volts over time while covering and uncovering the photoresistor"></svg>
-      <p>This is V_out from my demo. The voltage drops when I cover the sensor, stays low while it's covered, and climbs back up when I uncover it. The dashed red line is the 1.47 V threshold (reading of 300) where the LEDs switch on.</p>
+      <p>This is V_out from my demo. The voltage drops when when the light is turning off and falls below the 1.47 V threshold, which turns the LEDs on.</p>
     </div>
 
     <div class="qa">
@@ -341,8 +341,8 @@ void loop() {
 </main>
 
 <script>
-  // Sample readings, one every 0.2 s (matches delay(200)). Replace with your own serial data.
-  const readings = [780,775,770,765,740,600,410,250,180,150,120,130,150,140,160,300,420,560,700,760,785,790];
+  // Sample readings, one every 0.2 s (matches delay(200)).
+  const readings = [407,384,317,207,158,186,171];
   // Seconds between samples
   const dt = 0.2;
   // Convert readings to volts
@@ -372,7 +372,7 @@ void loop() {
   volts.forEach((v, i) => { out += `<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="#3182ce"/>`; });
   // Axis titles
   out += `<text x="${(L + W - R) / 2}" y="${H - 8}" font-size="13" fill="#1f2933" text-anchor="middle">Time (s)</text>`;
-  out += `<text transform="translate(16 ${(T + H - B) / 2}) rotate(-90)" font-size="13" fill="#1f2933" text-anchor="middle">V-measure (V)</text>`;
+  out += `<text transform="translate(16 ${(T + H - B) / 2}) rotate(-90)" font-size="13" fill="#1f2933" text-anchor="middle">V-out (V)</text>`;
   svg.innerHTML = out;
 </script>
 </body>

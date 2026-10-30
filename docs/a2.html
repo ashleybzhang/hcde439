@@ -152,7 +152,7 @@
     <h2>1. Schematic and breadboard</h2>
     <div class="grid">
       <figure>
-        <img src="Firefly schematic.jpg" alt="Circuit schematic with three LED branches and a button with a pull-down resistor">
+        <img src="a2 schematic.jpg" alt="Circuit schematic with three LED branches and a button with a pull-down resistor">
         <figcaption>
           <strong>Schematic.</strong> Three LED branches connect to Arduino pins D9, D7 and D8, each with a 330&Omega; resistor in series. The button connects 5 V to pin D2, and a 10 k&Omega; pull-down resistor connects D2 to GND. The pull-down keeps D2 reading LOW when the button is open, and limits the current to 0.5 mA when it is pressed so 5 V is never shorted to ground.
         </figcaption>
@@ -169,8 +169,8 @@
 
   <section>
     <h2>2. Current-limiting resistor calculations</h2>
-    <p>Each LED is sized for a target of 10 mA (0.010 A) from a 5 V pin, comfortably under the Uno's recommended 20 mA per pin. Each resistor is sized with Ohm's law:</p>
-    <div class="formula">R = (V_source &minus; V_forward) / I_target</div>
+    <p>The assignment doesn’t specify a current, so I chose 10 mA per LED. A typical red LED is rated for about 20 mA, and an Uno pin should stay under 20 mA, so 10 mA keeps both well within limits. Each resistor is measured with Ohm's law:</p>
+    <div class="formula">R = (V_in &minus; V_forward) / I</div>
 
     <div class="table-wrap">
       <table>
@@ -178,12 +178,12 @@
           <tr><th>Part</th><th>Forward voltage</th><th>Calculation</th><th>Resistor used</th><th>Actual current</th></tr>
         </thead>
         <tbody>
-          <tr><td>Red LED (&times;3)</td><td>&asymp; 2.0 V</td><td>(5 &minus; 2.0) / 0.010 = 300&Omega;</td><td>330&Omega;</td><td>3.0 / 330 = 9.1 mA</td></tr>
+          <tr><td>Red LED (&times;3)</td><td>&asymp; 2.0 V</td><td>(5 &minus; 2.0) / 0.010 = 300&Omega;</td><td>330&Omega;</td><td>9.1 mA</td></tr>
           <tr><td>Button</td><td>n/a</td><td>5 V / 10 kΩ = 0.5 mA&Omega;</td><td>10 k&Omega;</td><td>5 / 10,000 = 0.5 mA</td></tr>
         </tbody>
       </table>
     </div>
-    <p style="margin-top:14px;">The LED value is rounded up to the next standard resistor, so the real current is slightly under 10 mA. Power in each LED resistor is I&sup2;R &asymp; 27 mW, far below a 1/4 W rating. For the button, 10 k&Omega; is small enough to hold the pin firmly LOW and large enough to waste almost no power.</p>
+    <p style="margin-top:14px;">The LED value is rounded up to the next standard resistor, so the real current is slightly under 10 mA. For the button, 10 k&Omega; is small enough to hold the pin firmly LOW and large enough to waste close to no power.</p>
   </section>
 
   <section>

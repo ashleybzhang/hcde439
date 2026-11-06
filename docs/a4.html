@@ -403,28 +403,9 @@ void loop() {
       </div>
       <p style="margin-top:14px;">With the sensor on top, more light means a higher voltage. On the bottom, more light means a lower voltage. I used the top so "more light = bigger number," but if I flipped it I'd just flip the <code>map()</code> output range and the <code>if</code> comparison.</p>
     </div>
-    <figure>
-        <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="Pin 9 voltage over time for three servo angles">
-            <g stroke="#222" fill="none" stroke-width="1.5">
-                <path d="M40 100 H40 V40 H54 V100 H260"/>
-                <path d="M40 220 H40 V160 H82 V220 H260"/>
-                <path d="M40 340 H40 V280 H108 V340 H260"/>
-            </g>
-            <g fill="#222">
-                <text x="270" y="45">5V</text>
-                <text x="270" y="105">0V</text>
-                <text x="270" y="170">5V</text>
-                <text x="270" y="225">0V</text>
-                <text x="270" y="290">5V</text>
-                <text x="270" y="345">0V</text>
-                <text x="300" y="75">pos = 0: pulse about 0.5 ms wide</text>
-                <text x="300" y="195">pos = 90: pulse about 1.5 ms wide</text>
-                <text x="300" y="315">pos = 180: pulse about 2.4 ms wide</text>
-                <text x="40" y="20">One 20 ms period at three different angles (x-axis: time, y-axis: voltage at pin 9)</text>
-            </g>
-        </svg>
-        <figcaption>Each panel is one 20 ms period, and the pattern repeats every 20 ms. Over the whole sweep the pulse slowly gets wider, from the top panel to the bottom one. (Redraw this by hand if you want it to match your other graphs.)</figcaption>
-    </figure>
+    <img src="a4-q1-graph.png" alt="Three graphs of the voltage at pin 9 over 25 milliseconds, one for each servo angle: 0, 90 and 180 degrees. Each shows a 5 volt pulse every 20 milliseconds, and the pulse gets wider as the angle increases.">
+    <figcaption>Each panel is one 20 ms period, and the pattern repeats every 20 ms. Over the whole sweep the pulse slowly gets wider, from the top panel to the bottom one.</figcaption>
+</figure>
     
     <h3>Q2: A reading that's wrong 1% of the time</h3>
     <p>I took a few readings and used the middle (the median). One "bad" value ends up at one end of the sorted list and gets ignored.</p>

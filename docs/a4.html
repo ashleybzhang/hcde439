@@ -141,29 +141,45 @@
 <body>
 <main>
 
-  <header>
+<header>
     <a class="back-link" href="index.html">&larr; Back to home</a>
     <img class="hero" src="smartfan banner.png" alt="Banner image for Assignment 4">
     <h1>Assignment 4: Smart Fan</h1>
     <p>Small fan that turns on with a touch and speeds up when the room gets brighter.</p>
-  </header>
+    <p>It uses two libraries (<code>Servo</code> and <code>CapacitiveSensor</code>). The inputs are the touch pad and the photoresistor. The outputs are the servo and the LED.</p>
+</header>
 
-  <section>
+<h2>Connections</h2>
+<table>
+  <tr><th>Part</th><th>Connects to</th></tr>
+  <tr><td>Servo signal wire</td><td>Pin 9 (red wire to 5V, brown wire to GND)</td></tr>
+  <tr><td>Photoresistor and 10kΩ resistor</td><td>5V → photoresistor → A0 → 10kΩ → GND</td></tr>
+  <tr><td>Touch pad (bare wire)</td><td>Pin 2 → 1MΩ resistor → pin 4. The touch wire is in the same row as pin 4.</td></tr>
+  <tr><td>LED and 220Ω resistor</td><td>Pin 6 → 220Ω → LED long leg, LED short leg → GND</td></tr>
+</table>
+
+<section>
     <h2>1. Schematic and breadboard</h2>
     <div class="grid">
-      <figure>
-        <img src="smart fan schematic.jpg" alt="Schematic of a photoresistor voltage divider connected to A0 and three LEDs with resistors on pins 9, 10 and 11">
-        <figcaption>
-          <strong>Schematic.</strong> 5 V runs through the photoresistor (R1), then to the A0 node (V-out), then through a 10 k&Omega; resistor (R2) to GND. Three LED branches connect to pins D9, D10 and D11, each with a 220&Omega; resistor in series. I chose 10 k&Omega; for R2 because it sits near the middle of the photoresistor's range, so the voltage swings across most of 0&ndash;5 V (calculation below).
-        </figcaption>
-      </figure>
-
-      <figure>
-        <img src="duskometer circuit.jpg" alt="Photo of the breadboard circuit">
-        <figcaption>
-          <strong>Breadboard.</strong> The photoresistor and the 10 k&Omega; resistor share a row, and a jumper from that row goes to A0. The three LEDs are on pins 9, 10 and 11 (all PWM pins), each LED's anode (long leg) goes through a 220&Omega; resistor, and the cathodes return to the shared ground rail.
-        </figcaption>
-      </figure>
-      <p>It uses two libraries (<code>Servo</code> and <code>CapacitiveSensor</code>). The inputs are the touch pad and the photoresistor. The outputs are the servo and the LED.</p>
+        <figure>
+            <img src="smart fan schematic.jpg" alt="Schematic of the smart fan circuit">
+            <figcaption>
+                <strong>Schematic.</strong> Every wire is labeled with its Arduino pin. The photoresistor and the 10kΩ resistor make a voltage divider, and A0 reads the point between them. I used 10kΩ because it is in the same range as the photoresistor, so the voltage at A0 has room to move up and down. The 220Ω resistor keeps the LED at about 14 mA ((5V − 2V) / 220Ω), which is safe for the LED and the pin. The 1MΩ resistor between pins 2 and 4 is what the CapacitiveSensor library needs. Pin 2 sends a pulse and pin 4 listens for it, so when a finger touches the wire on pin 4 the pulse takes longer to arrive.
+            </figcaption>
+        </figure>
+        
+        <figure>
+            <img src="smart fan.jpg" alt="Photo of the breadboard circuit">
+            <figcaption>
+                <strong>Breadboard.</strong> The real circuit on the breadboard. It matches the schematic: servo on pin 9, photoresistor divider on A0, touch pad on pins 2 and 4, and LED on pin 6.
+            </figcaption>
+        </figure>
     </div>
-  </section>
+</section>
+
+<h2>Demo</h2>
+<figure>
+    <img src="images/a4-demo.gif" alt="Animated gif of the fan turning on with a touch and changing speed with light">
+    <figcaption>A touch turns on the LED and the servo starts sweeping. Covering the photoresistor slows the sweep, and shining a light on it speeds it up. A second touch turns everything off.</figcaption>
+</figure>
+

@@ -143,7 +143,7 @@
 
 <header>
     <a class="back-link" href="index.html">&larr; Back to home</a>
-    <img class="hero" src="smartfan banner.png" alt="Banner image for Assignment 4">
+    <img class="hero" src="smart fan banner.jpg" alt="Banner image for Assignment 4">
     <h1>Assignment 4: Smart Fan</h1>
     <p>Small fan that turns on with a touch and speeds up when the room gets brighter.</p>
     <p>It uses two libraries (<code>Servo</code> and <code>CapacitiveSensor</code>). The inputs are the touch pad and the photoresistor. The outputs are the servo and the LED.</p>
@@ -387,7 +387,6 @@ void loop() {
 
 <section>
     <h2>5. Questions</h2>
-
     <div class="qa">
       <h3>Q1: Pin 9 Graph</h3>
       <p>The servo library doesn't put out a steady voltage. It sends a pulse every 20 ms (50 times a second), and each pulse goes up to 5V and then back to 0V. The angle is set by how long the pulse stays high: about 0.5 ms for 0°, about 1.5 ms for 90°, and about 2.4 ms for 180° (these are the library's defaults). Each angle is held for 100 ms, so there are about 5 pulses of the same width before the next angle, and each step makes the pulse a little wider. The full sweep takes about 18 seconds, and then the loop starts over with the narrowest pulse again.</p>
@@ -436,7 +435,6 @@ void loop() {
         sort(readings)
         // The middle one is the answer, a single bad reading ends up at an end and is ignored
         value = readings[2]</code></pre>
-    </main>
     
     <h3>Q3: A reading that's noisy by up to 10%</h3>
     <p>Random noise goes up and down, so it averages out. I take a bunch of readings and average them. More readings means less noise, but a slower response.</p>
@@ -450,6 +448,6 @@ void loop() {
         <p>This is the same thing my code does for the photoresistor.</p>
 
     <h3>AI use</h3>
-    <p>I used AI to help my troubleshoot my existing code. </p>
+    <p>I used AI to help my troubleshoot my existing code. Some example prompts include:</p>
     </body>
 </html>

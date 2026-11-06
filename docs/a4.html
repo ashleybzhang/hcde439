@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment 4: Smart Fan</title>
+  <style>
+    :root {
+      --text: #1f2933;
+      --muted: #52606d;
+      --heading: #34495e;
+      --accent: #3182ce;
+      --border: #e1e4e6;
+      --surface: #ffffff;
+      --tint: #edf2f7;
+      --code-bg: #2d3748;
+      --code-text: #f7fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0 20px 60px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: #f7f8fa;
+    }
+    main { max-width: 960px; margin: 0 auto; }
+    a { color: var(--accent); }
+
+    /* Header */
+    header { padding: 24px 0 0; }
+    header h1 { margin: 0 0 10px; font-size: 2rem; line-height: 1.2; color: var(--heading); }
+    header p { margin: 0; color: var(--muted); max-width: 65ch; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .hero {
+      display: block;
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 56px;
+    }
+
+    /* Sections */
+    section { margin-top: 24px; }
+    header + section { margin-top: 24px; }
+    h2 {
+      margin: 0 0 16px;
+      padding-bottom: 6px;
+      font-size: 1.4rem;
+      color: var(--heading);
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { margin: 28px 0 10px; font-size: 1.1rem; color: var(--heading); }
+    p { margin: 0 0 14px; max-width: 75ch; }
+
+    /* Figures */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+    figure {
+      margin: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      background: #eee;
+    }
+    figcaption {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    figure.narrow { max-width: 520px; margin: 0 auto; }
+
+    /* Calculations */
+    .formula {
+      margin: 16px 0;
+      padding: 14px 16px;
+      background: var(--tint);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-x: auto;
+    }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 0.95rem; }
+    th, td { padding: 10px 12px; text-align: left; border: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--tint); color: var(--heading); }
+
+    /* Code */
+    pre {
+      margin: 16px 0 0;
+      padding: 20px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    pre code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    /* Q&A */
+    .qa {
+      margin-bottom: 20px;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .qa h3 { margin-top: 0; }
+    .qa img, .qa svg { display: block; max-width: 100%; height: auto; margin: 0 0 12px; }
+    .qa p:last-child { margin-bottom: 0; }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.6rem; }
+      pre { padding: 14px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <header>
+    <a class="back-link" href="index.html">&larr; Back to home</a>
+    <img class="hero" src="smartfan banner.png" alt="Banner image for Assignment 4">
+    <h1>Assignment 4: Smart Fan</h1>
+    <p>Small fan that turns on with a touch and speeds up when the room gets brighter.</p>
+  </header>
+
+  <section>
+    <h2>1. Schematic and breadboard</h2>
+    <div class="grid">
+      <figure>
+        <img src="smart fan schematic.jpg" alt="Schematic of a photoresistor voltage divider connected to A0 and three LEDs with resistors on pins 9, 10 and 11">
+        <figcaption>
+          <strong>Schematic.</strong> 5 V runs through the photoresistor (R1), then to the A0 node (V-out), then through a 10 k&Omega; resistor (R2) to GND. Three LED branches connect to pins D9, D10 and D11, each with a 220&Omega; resistor in series. I chose 10 k&Omega; for R2 because it sits near the middle of the photoresistor's range, so the voltage swings across most of 0&ndash;5 V (calculation below).
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img src="duskometer circuit.jpg" alt="Photo of the breadboard circuit">
+        <figcaption>
+          <strong>Breadboard.</strong> The photoresistor and the 10 k&Omega; resistor share a row, and a jumper from that row goes to A0. The three LEDs are on pins 9, 10 and 11 (all PWM pins), each LED's anode (long leg) goes through a 220&Omega; resistor, and the cathodes return to the shared ground rail.
+        </figcaption>
+      </figure>
+      <p>It uses two libraries (<code>Servo</code> and <code>CapacitiveSensor</code>). The inputs are the touch pad and the photoresistor. The outputs are the servo and the LED.</p>
+    </div>
+  </section>

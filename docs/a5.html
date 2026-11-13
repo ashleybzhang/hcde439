@@ -285,19 +285,17 @@ void loop() {
       
       <h3>Q2: Schematic with Arduino, DC motor, and flyback diode</h3>
       <figure>
-        <img src="images/q2_schematic.png" alt="Schematic with Arduino, DC motor, and flyback diode">
+        <img src="a5 q2.jpg" alt="Schematic with Arduino, DC motor, and flyback diode">
         <figcaption>Arduino pin 3 → 330 Ω → IRLZ44N gate, with the motor, flyback diode, and battery as in the circuit above.</figcaption>
     </figure>
     <ul>
         <li>Arduino Uno R3: <a href="https://docs.arduino.cc/hardware/uno-rev3">datasheet</a></li>
         <li>IRLZ44N MOSFET: <a href="https://www.infineon.com/assets/row/public/documents/24/49/infineon-irlz44n-datasheet-en.pdf">datasheet</a></li>
-        <li>Flyback diode (1N4007): datasheet link here</li>
-        <li>DC motor: datasheet link here</li>
     </ul>
     
     <h3>Q3: L293D schematic and pseudo-code</h3>
     <figure>
-        <img src="images/q3_schematic.png" alt="Schematic with Arduino, L293D, and two motors">
+        <img src="a5 q3.jpg" alt="Schematic with Arduino, L293D, and two motors">
         <figcaption>Schematic with the Arduino, the L293D, and two motors.</figcaption>
     </figure>
     <pre><code>// Set the L293D control pins as outputs
@@ -324,9 +322,8 @@ loop:
     <h3>AI use</h3>
     <p>I used AI to help me troubleshoot my existing code. Some example prompts I include:</p>
     <ul style="list-style: disc; padding-left: 1.5rem;">
-      <li>"the swervo is reactive to the sensor, but the led light still goes on and off whenever ad not based on the touchpad"</li>
-      <li>"the touch is not working, and the serialmonitor display does not go up to 30"</li>
-      <li>"The light is not turning on and my touch is not registering. Here is my current code. What is the reason it's not responsive?"</li>
+      <li>"the motor is reactive to the battery, and it's still ongoing when the usb is not charged. I'm unsure why this is happening."</li>
+      <li>"please double check that my code is corrent"</li>
       <li>"I am getting an error when I'm running my program. Why is this happening?"</li>
     </ul>
     </p>

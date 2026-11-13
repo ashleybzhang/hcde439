@@ -166,14 +166,14 @@
         <figure>
             <img src="a5 schematic.jpg" alt="Schematic of the smart fan circuit">
             <figcaption>
-                <strong>Schematic.</strong> Every wire is labeled with its Arduino pin. The photoresistor and the 10kΩ resistor make a voltage divider, and A0 reads the point between them. I used 10kΩ because it is in the same range as the photoresistor, so the voltage at A0 has room to move up and down. The 220Ω resistor keeps the LED at about 14 mA ((5V − 2V) / 220Ω), which is safe for the LED and the pin. The 1MΩ resistor between pins 2 and 4 is what the CapacitiveSensor library needs. Pin 2 sends a pulse and pin 4 listens for it, so when a finger touches the wire on pin 4 the pulse takes longer to arrive.
+                <strong>Schematic.</strong> Schematic of the circuit.
             </figcaption>
         </figure>
         
         <figure>
-            <img src="a5_circuit.jpg" alt="Photo of the breadboard circuit">
+            <img src="smartfan.2 circuit.jpg" alt="Photo of the breadboard circuit">
             <figcaption>
-                <strong>Breadboard.</strong> The real circuit on the breadboard. It matches the schematic: servo on pin 9, photoresistor divider on A0, touch pad on pins 2 and 4, and LED on pin 6.
+                <strong>Breadboard.</strong> The built circuit, matching the schematic.
             </figcaption>
         </figure>
     </div>
@@ -181,7 +181,7 @@
 
 <h2>Demo</h2>
 <figure>
-    <img src="smart fan demo.gif" alt="Animated gif of the fan turning on with a touch and changing speed with light">
+    <img src="a5 demo.gif" alt="Animated gif of the fan turning on with a touch and changing speed with light">
     <figcaption>A touch turns on the LED and the servo starts sweeping. Covering the photoresistor slows the sweep, and shining a light on it speeds it up. A second touch turns everything off.</figcaption>
 </figure>
 

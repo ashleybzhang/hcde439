@@ -186,86 +186,111 @@
 </figure>
 
 <h2>Code</h2>
-<pre><code>// Include the CapacitiveSensor library so we can measure touch
+<pre><code>// Add CapacitiveSensor library
 #include <CapacitiveSensor.h>
 
-// PWM-capable pin that drives the MOSFET gate through a 330 ohm resistor
-const int MOTOR_PIN = 3;
-// Number of speed levels (off, low, medium, high)
-const int NUM_LEVELS = 4;
-// PWM value for each speed level
-const int LEVELS[NUM_LEVELS] = {0, 100, 175, 255};
-// Raw reading above which we count the pad as touched (calibrated from Serial Monitor: untouched max ~62, touched min ~1004)
-const long TOUCH_THRESHOLD = 500;
-
-// Create the sensor: pin 4 is the send pin, pin 5 is the receive pin (touch pad)
-CapacitiveSensor touchPad = CapacitiveSensor(4, 5);
-
-// Index of the current speed level, starting at 0 (off)
+// Pin 3 sends PWM signal to the MOSFET gate
+int motorPin = 3;
+// A sensor value above this number counts as a touch
+int threshold = 250;
+// speed level
 int level = 0;
-// Remembers whether the pad was touched on the previous loop
-bool wasTouched = false;
+// Remembers if the pad was touched earlier
+int lastTouch = 0;
+// The PWM value that gets sent to the MOSFET gate
+int speed = 0;
 
-// setup() runs once when the Arduino powers on or resets
+// Set up the capacitive sensor
+CapacitiveSensor cs_s4_r5 = CapacitiveSensor(4, 5);
+
+// runs setup()
 void setup() {
-  // Start serial communication at 9600 baud so we can watch readings
+  // Serial communication to print values
   Serial.begin(9600);
-  // OUTPUT: pin actively drives 5 V (HIGH) or 0 V (LOW) to the gate; it is a low-impedance source, unlike the default INPUT state which floats (high impedance)
-  pinMode(MOTOR_PIN, OUTPUT);
-  // Make sure the fan is off at startup (0 = pin held LOW the whole time)
-  analogWrite(MOTOR_PIN, 0);
+  // Output
+  pinMode(motorPin, OUTPUT);
 }
 
-// loop() runs over and over after setup() finishes
+// runs loop() after setup() is complete
 void loop() {
-  // Take 30 samples from the pad and store the total as the raw reading
-  long reading = touchPad.capacitiveSensor(30);
-  // Decide whether the pad is touched by comparing the reading to the threshold
-  bool touched = reading > TOUCH_THRESHOLD;
-  // Only act on the moment the touch starts, not while the finger stays down
-  if (touched && !wasTouched) {
-    // Move to the next speed level and wrap back to 0 after the last one
-    level = (level + 1) % NUM_LEVELS;
-    // Send the PWM value for this level to the MOSFET gate
-    analogWrite(MOTOR_PIN, LEVELS[level]);
+  // Get the capacitive sensor value using 30 samples
+  long total1 = cs_s4_r5.capacitiveSensor(30);
+  // start state: assumes pad is not touched
+  int touch = 0;
+  // Check if sensor value is above the threshold
+  if (total1 > threshold) {
+    // The pad is being touched
+    touch = 1;
   }
-  // Save the current touch state for the next loop
-  wasTouched = touched;
-  // Print a label for the raw reading
-  Serial.print("Reading: ");
-  // Print the raw reading
-  Serial.print(reading);
-  // Print a label for the PWM value
-  Serial.print("  PWM: ");
-  // Print the current PWM value and end the line
-  Serial.println(LEVELS[level]);
-  // Short pause so the Serial Monitor is readable and touches aren't double counted
+  // Changes speed when a touch just started
+  if (touch == 1 && lastTouch == 0) {
+    // Go up one speed level
+    level = level + 1;
+    // Check if went past high
+    if (level > 3) {
+      // Go back to off
+      level = 0;
+    }
+  }
+  // Check if level is off
+  if (level == 0) {
+    // PWM value 0 = MOSFET stays off
+    speed = 0;
+  }
+  // Check if level is low
+  if (level == 1) {
+    // Low speed: about 3.2 V average on the motor
+    speed = 90;
+  }
+  // Check if level is medium
+  if (level == 2) {
+    // Medium speed: about 4.6 V average on the motor
+    speed = 130;
+  }
+  // Check if level is high
+  if (level == 3) {
+    // High speed: about 6 V average on the motor
+    speed = 170;
+  }
+  // Send PWM value to MOSFET gate to set the fan speed
+  analogWrite(motorPin, speed);
+  // Remembers this touch state for the next loop
+  lastTouch = touch;
+  // Print a label for the sensor value
+  Serial.print("Sensor Value: ");
+  // Print sensor value
+  Serial.print(total1);
+  // Print tab and label for PWM value
+  Serial.print("\t PWM: ");
+  // Print PWM value and end the line
+  Serial.println(speed);
+  // Delay to limit data to the serial port and avoid double counting a touch
   delay(50);
 }</code></pre>
 
 <h2>Calculations</h2>
-<p>These use a 6 V supply and a motor that draws about 0.25 A running and 0.6 A stalled.</p>
+<p>These use a 9 V battery and a 3 - 6 V motor that draws about 0.25 A running and 0.6 A stalled.</p>
  
 <h3>Gate resistor (330 Ω)</h3>
-<p>When pin 3 is HIGH, the peak gate current is 5 V / 330 Ω ≈ <strong>15 mA</strong>. That is under the 20 mA recommended for an Uno pin, and the resistor limits the surge while the gate charges.</p>
+<p>When pin 3 is HIGH, the peak gate current is 5 V / 330 Ω ≈ 15 mA. That is under the 20 mA recommended for an Uno pin, and the resistor limits the surge while the gate charges.</p>
  
 <h3>Gate pull-down (10 kΩ)</h3>
-<p>With pin 3 HIGH, the pull-down draws 5 V / 10 kΩ = <strong>0.5 mA</strong>, which is negligible. It holds the gate at 0 V while the Arduino boots or resets, so the fan can't turn on by accident.</p>
+<p>With pin 3 HIGH, the pull-down draws 5 V / 10 kΩ = 0.5 mA, which is negligible. It holds the gate at 0 V while the Arduino boots or resets, so the fan can't turn on by accident.</p>
  
 <h3>MOSFET fully on (analogWrite = 255)</h3>
-<p>V<sub>GS</sub> = 5 V, well above the gate threshold. From the datasheet, R<sub>DS(on)</sub> ≈ 0.022 Ω at V<sub>GS</sub> = 5 V. At 0.25 A, V<sub>DS</sub> = 0.25 × 0.022 ≈ <strong>5.5 mV</strong>, so the motor sees almost the full 6 V. The power in the MOSFET is I²R = 0.25² × 0.022 ≈ <strong>1.4 mW</strong>.</p>
+<p>VGS = 5 V, well above the gate threshold. From the datasheet, RDS(on) ≈ 0.022 Ω at VGS = 5 V. At 0.25 A, VDS = 0.25 × 0.022 ≈ 5.5 mV, so the motor sees almost the full 9 V during a pulse. The power in the MOSFET is I²R = 0.25² × 0.022 ≈ 1.4 mW.</p>
  
 <h3>MOSFET off (analogWrite = 0)</h3>
-<p>V<sub>GS</sub> = 0 V, so no current flows. V<sub>DS</sub> ≈ 6 V and the motor sees 0 V.</p>
+<p>VGS = 0 V, so no current flows. VDS ≈ 9 V and the motor sees 0 V.</p>
  
 <h3>Speed levels</h3>
-<p>PWM switches the motor on and off quickly, so the average motor voltage is (analogWrite / 255) × 6 V.</p>
+<p>PWM switches the motor on and off quickly, so the average motor voltage is (analogWrite / 255) × 9 V. Since the motor is rated for 3 to 6 V, I capped analogWrite at 170, which keeps the highest average at 6 V even though each pulse is 9 V due to the battery.</p>
 <table>
   <tr><th>Level</th><th>analogWrite</th><th>Duty cycle</th><th>Expected average motor voltage</th></tr>
   <tr><td>Off</td><td>0</td><td>0%</td><td>0 V</td></tr>
-  <tr><td>Low</td><td>100</td><td>39%</td><td>2.35 V</td></tr>
-  <tr><td>Medium</td><td>175</td><td>69%</td><td>4.1 V</td></tr>
-  <tr><td>High</td><td>255</td><td>100%</td><td>6 V</td></tr>
+  <tr><td>Low</td><td>90</td><td>35%</td><td>2.5 V</td></tr>
+  <tr><td>Medium</td><td>130</td><td>51%</td><td>4.1 V</td></tr>
+  <tr><td>High</td><td>170</td><td>67%</td><td>6 V</td></tr>
 </table>
  
 <h3>Touch sensor (1 MΩ)</h3>
@@ -299,25 +324,90 @@ void loop() {
         <figcaption>Schematic with the Arduino, the L293D, and two motors.</figcaption>
     </figure>
     <pre><code>// Set the L293D control pins as outputs
-setup:
-    set pins 5, 6, 7, 8, 9, 10 as OUTPUT
-    // Enable both motors at full speed
-    write 255 to pin 5
-    write 255 to pin 10
- 
-loop:
-    // Both motors forward
-    pin 6 = HIGH, pin 7 = LOW, pin 8 = HIGH, pin 9 = LOW
-    wait 2 seconds
-    // Both motors back
-    pin 6 = LOW, pin 7 = HIGH, pin 8 = LOW, pin 9 = HIGH
-    wait 2 seconds
-    // Motor 1 forward, motor 2 back
-    pin 6 = HIGH, pin 7 = LOW, pin 8 = LOW, pin 9 = HIGH
-    wait 2 seconds
-    // Motor 1 back, motor 2 forward
-    pin 6 = LOW, pin 7 = HIGH, pin 8 = HIGH, pin 9 = LOW
-    wait 2 seconds</code></pre>
+// Pin 7 connected to enable for motor 1 (pin 1) on L293D
+int enable1 = 7;
+// Pin 6 connected to motor 1 control 1A (pin 2) on L293D
+int motor1_fwd = 6;
+// Pin 5 connected to motor 1 control 2A (pin 7) on L293D
+int motor1_back = 5;
+// Pin 8 connected to enable for motor 2 (pin 9) on L293D
+int enable2 = 8;
+// Pin 9 connected to motor 2 control 3A (pin 10) on L293D
+int motor2_fwd = 9;
+// Pin 10 connected to motor 2 control 4A (pin 15) on L293D
+int motor2_back = 10;
+
+void setup() {
+  // Set the pins as outputs
+  pinMode(enable1, OUTPUT);
+  pinMode(motor1_fwd, OUTPUT);
+  pinMode(motor1_back, OUTPUT);
+  pinMode(enable2, OUTPUT);
+  pinMode(motor2_fwd, OUTPUT);
+  pinMode(motor2_back, OUTPUT);
+
+  // Enable both motor drivers all the time
+  digitalWrite(enable1, HIGH);
+  digitalWrite(enable2, HIGH);
+}
+
+void loop() {
+  // Both motors forward
+  digitalWrite(motor1_fwd, HIGH);
+  digitalWrite(motor1_back, LOW);
+  digitalWrite(motor2_fwd, HIGH);
+  digitalWrite(motor2_back, LOW);
+  delay(1000);
+
+  // Brake both motors
+  digitalWrite(motor1_fwd, LOW);
+  digitalWrite(motor1_back, LOW);
+  digitalWrite(motor2_fwd, LOW);
+  digitalWrite(motor2_back, LOW);
+  delay(100);
+
+  // Both motors back
+  digitalWrite(motor1_fwd, LOW);
+  digitalWrite(motor1_back, HIGH);
+  digitalWrite(motor2_fwd, LOW);
+  digitalWrite(motor2_back, HIGH);
+  delay(1000);
+
+  // Brake both motors
+  digitalWrite(motor1_fwd, LOW);
+  digitalWrite(motor1_back, LOW);
+  digitalWrite(motor2_fwd, LOW);
+  digitalWrite(motor2_back, LOW);
+  delay(100);
+
+  // Motor 1 forward, motor 2 back
+  digitalWrite(motor1_fwd, HIGH);
+  digitalWrite(motor1_back, LOW);
+  digitalWrite(motor2_fwd, LOW);
+  digitalWrite(motor2_back, HIGH);
+  delay(1000);
+
+  // Brake both motors
+  digitalWrite(motor1_fwd, LOW);
+  digitalWrite(motor1_back, LOW);
+  digitalWrite(motor2_fwd, LOW);
+  digitalWrite(motor2_back, LOW);
+  delay(100);
+
+  // Motor 1 back, motor 2 forward
+  digitalWrite(motor1_fwd, LOW);
+  digitalWrite(motor1_back, HIGH);
+  digitalWrite(motor2_fwd, HIGH);
+  digitalWrite(motor2_back, LOW);
+  delay(1000);
+
+  // Brake both motors
+  digitalWrite(motor1_fwd, LOW);
+  digitalWrite(motor1_back, LOW);
+  digitalWrite(motor2_fwd, LOW);
+  digitalWrite(motor2_back, LOW);
+  delay(100);
+}</code></pre>
         
     <h3>AI use</h3>
     <p>I used AI to help me troubleshoot my existing code. Some example prompts I include:</p>

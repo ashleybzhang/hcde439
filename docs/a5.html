@@ -272,13 +272,18 @@ void loop() {
 <p>These use a 9 V battery and a 3 - 6 V motor that draws about 0.25 A running and 0.6 A stalled.</p>
  
 <h3>Gate resistor (330 Ω)</h3>
-<p>When pin 3 is HIGH, the peak gate current is 5 V / 330 Ω ≈ 15 mA. That is under the 20 mA recommended for an Uno pin, and the resistor limits the surge while the gate charges.</p>
+<p>When pin 3 is HIGH, the peak gate current is 5 V / 330 Ω ≈ 15 mA (from I = V / R). 15 mA < 20 mA (within recommended limit for an Uno pin), and resistor limits the surge while the gate charges.</p>
  
 <h3>Gate pull-down (10 kΩ)</h3>
-<p>With pin 3 HIGH, the pull-down draws 5 V / 10 kΩ = 0.5 mA, which is negligible. It holds the gate at 0 V while the Arduino boots or resets, so the fan can't turn on by accident.</p>
+<p>I = 5 V / (330 Ω + 10,000 Ω) ≈ 0.48 mA.
+Vgate = 5 V × 10,000 / 10,330 ≈ 4.84 V.
+The pull-down holds the gate at 0 V while the Arduino boots, so the fan stays off.</p>
  
 <h3>MOSFET fully on (analogWrite = 255)</h3>
-<p>VGS = 5 V, well above the gate threshold. From the datasheet, RDS(on) ≈ 0.022 Ω at VGS = 5 V. At 0.25 A, VDS = 0.25 × 0.022 ≈ 5.5 mV, so the motor sees almost the full 9 V during a pulse. The power in the MOSFET is I²R = 0.25² × 0.022 ≈ 1.4 mW.</p>
+<p>VGS = 4.84 V, which is above the 1.0 to 2.0 V gate threshold, so the MOSFET turns fully on.
+VDS = 0.25 A × 0.025 Ω ≈ 6.3 mV (RDS(on) = 0.025 Ω at VGS = 5 V, from the datasheet).
+Vmotor = 9 V − 0.0063 V ≈ 8.99 V, almost the full 9 V during a pulse.
+If the motor stalls at 0.6 A, VDS = 0.6 A × 0.025 Ω = 15 mV, which is still tiny.</p>
  
 <h3>MOSFET off (analogWrite = 0)</h3>
 <p>VGS = 0 V, so no current flows. VDS ≈ 9 V and the motor sees 0 V.</p>
@@ -297,10 +302,10 @@ void loop() {
 <p>The send pin charges the pad through the 1 MΩ resistor, so the maximum current is 5 V / 1 MΩ = <strong>5 µA</strong>.</p>
  
 <h3>Transistor current limit</h3>
-<p>The IRLZ44N can handle a maximum continuous drain current of 47 A (datasheet, at 25 °C). The most the motor draws is its stall current of about 0.6 A, which is about 1.3% of that limit, so the MOSFET is well within its rating. The flyback diode is rated for 1 A, which is also above 0.6 A.</p>
+<p>The motor's worst case is a 0.6 A stall, about 1.3% of the IRLZ44N's 47 A rating, so it is well within the limit. The diode is rated for 1 A, also above 0.6 A.</p>
  
 <h3>Flyback diode</h3>
-<p>When the MOSFET turns off, the motor's inductance keeps pushing current that has nowhere to go. The diode gives that current a path back to the supply, which protects the MOSFET from the voltage spike.</p>
+<p>When the MOSFET turns off, the motor's inductance pushes current that needs somewhere to go. The diode gives it a path back to the supply and protects the MOSFET from the spike.</p>
 
 <section>
     <h2>5. Questions</h2>
